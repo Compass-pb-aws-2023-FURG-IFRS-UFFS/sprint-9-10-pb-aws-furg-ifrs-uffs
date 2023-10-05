@@ -1,8 +1,22 @@
-# Avaliação Sprints 9 e 10 - Projeto Final - Programa de Bolsas Compass UOL / AWS e FURG/IFRS/UFFS
+# placeholder
 
 Avaliação das sprints 9 e 10 do programa de bolsas Compass UOL para formação em machine learning para AWS.
 
 ---
+
+## Integrantes
+
+<a href="https://github.com/FabianoMendonca"><img src="https://img.shields.io/badge/-Fabiano Souza Mendonça-000?&logo=github" height="25"></a>
+
+<a href="https://github.com/Gregory-JP"><img src="https://img.shields.io/badge/-Gregory Jasson Pitthan-000?&logo=github" height="25"></a>
+
+<a href="https://github.com/joaowinderfeldbussolotto"><img src="https://img.shields.io/badge/-Joao Victor Winderfeld Bussolotto-000?&logo=github" height="25"></a>
+
+<a href="https://github.com/luizpgt"><img src="https://img.shields.io/badge/-Luiz Paulo Grafetti Terres-000?&logo=github" height="25"></a>
+
+<a href="https://github.com/matth3wss"><img src="https://img.shields.io/badge/-Matheus Henrique Rodrigues da Costa-000?&logo=github" height="25"></a>
+
+<a href="https://github.com/Paulocc"><img src="https://img.shields.io/badge/-Paulo Sergio Nunes-000?&logo=github" height="25"></a>
 
 ## Execução
 
@@ -19,12 +33,12 @@ A equipe devevá:
 - Transcribe e/ou Polly;
 - Rekognition;
 - Lex;
-  
+
 3 - O canal do chatbot Lex deverá ser de uso público e permitir o envio de som e imagem.
 
 Dicas: procurem implementar uma aplicação de apelo social e busquem contatos com organizações públicas (universidades, associações, etc.).
 
-***
+---
 
 ## O que será avaliado
 
@@ -44,7 +58,7 @@ Dicas: procurem implementar uma aplicação de apelo social e busquem contatos c
   - Otimização do código fonte (evitar duplicações de código)
 - Objetividade do README.md
 
-***
+---
 
 ## Entrega
 
@@ -60,4 +74,3 @@ Dicas: procurem implementar uma aplicação de apelo social e busquem contatos c
   - 🔨 código fonte desenvolvido (Sugestão: pasta `src`)
 - **Cada grupo deverá fazer uma apresentação do trabalho completo desenvolvido no dia 31/10/2023**.
 - O prazo de entrega é até às 12h do dia 08/11/2023 no repositório do github ([https://github.com/Compass-pb-aws-2023-FURG-IFRS-UFFS/sprint-9-10-pb-aws-furg-ifrs-uffs](https://github.com/Compass-pb-aws-2023-FURG-IFRS-UFFS/sprint-9-10-pb-aws-furg-ifrs-uffs)).
-
