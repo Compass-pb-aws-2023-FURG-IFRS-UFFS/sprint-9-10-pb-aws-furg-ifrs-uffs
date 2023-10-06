@@ -1,4 +1,4 @@
-# Avaliação Sprints 9 e 10 - Projeto Final - Programa de Bolsas Compass UOL / AWS e FURG/IFRS/UFFS
+# Avaliação Sprints 9 e 10 - Projeto Final - Equipe 2
 
 Avaliação das sprints 9 e 10 do programa de bolsas Compass UOL para formação em machine learning para AWS.
 
