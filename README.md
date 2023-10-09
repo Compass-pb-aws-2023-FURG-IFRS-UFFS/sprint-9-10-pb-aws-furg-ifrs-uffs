@@ -1,63 +1,104 @@
-# Avaliação Sprints 9 e 10 - Projeto Final - Equipe 2
+<div align="center">
+  <h1>EquiTalk Bot</h1>
+</div>
 
-Avaliação das sprints 9 e 10 do programa de bolsas Compass UOL para formação em machine learning para AWS.
+<div align="center">
+  <p>Equipe 1</p>
 
----
+  | Nome                                 | Linkedin                                                                                 |
+  | ---------------                      | -------------------------------------------------------------------                      |
+  | John Marcel   | [Link](https://www.linkedin.com/in/john-marcel-silveira-62530752/)    |
+  | Josué Fernandes                 | [Link](https://www.linkedin.com/in/josu%C3%A9-mendon%C3%A7a-dev77/)                             |
+  | Yuri Souza                       | [Link](https://www.linkedin.com/in/yuri-antunes-souza/)                      |    
+  | Luiz Scarsi           | [Link](https://www.linkedin.com/in/luiz-augusto-scarsi/)                |      
 
-## Execução
 
-Deverá ser produzido um projeto final para apresentação pública ao final deste Programa de Bolsas.
+</div>
 
-**Especificações**:
+***
 
-A equipe devevá:
+<a name="ancora"></a>
 
-1 - Escolher uma aplicação prática para implementação e definir a arquitetura preliminar AWS até 10/10/2023;
+## 📖 Sumário
+- [1 - Objetivo](#ancora1)
+- [2 - Funcionalidades](#ancora2)
+- [3 - Desenvolvimento do Projeto](#ancora3)
+- [4 - Acesso à Aplicação e Como Utilizá-la](#ancora4)
+- [5 - Estrutura de Pastas do Projeto](#ancora5)
+- [6 - Arquitetura AWS](#ancora6)
+- [7 - Dificuldades conhecidas](#ancora7)
+- [8 - Licença](#ancora8)
 
-2 - A aplicação deverá contemplar, no mínimo, as seguintes ferramentas AWS:
+<a id="ancora1"></a>
 
-- Transcribe e/ou Polly;
-- Rekognition;
-- Lex;
+# 1 - Objetivo
+
+O ``EquiTalk`` é uma inovadora solução de software que unifica os três principais modos de comunicação utilizados no mundo real: ``fala``, ``texto`` e ``visualização``. Sua missão é alcançar a maior audiência possível, criando um ambiente verdadeiramente acessível para todos os usuários. Ao integrar essas formas de linguagem, o ``EquiTalk`` não apenas amplia a acessibilidade, mas também capacita os usuários a terem sua voz na narrativa global. 
+    
+<a id="ancora2"></a>
+
+# 2 - Funcionalidades
+  - *Conversor de `Texto` para `Áudio`*
+      - **Exemplos de Casos de Uso**
+          - Auxílio para pessoas com deficiência visual.
+          - Auxílio para pessoas em processo de alfabetização.
+
+      - **Implementação**         
+          - Através do serviço ``Amazon Polly`` será gerado um áudio no ``S3`` do determinado texto para o usuário.
+    
+  - Conversor de `Imagem` para `Áudio`
+    - **Exemplos de Casos de Uso**
+      - Auxílio para pessoas com deficiência visual.
+      - Auxílio para pessoas em processos de aprendizagem (Resumos).
+
+    - **Implementação**
+      - Através do serviço ``Amazon Rekognition`` Text in Image e do ``Amazon Polly`` será gerado um áudio no ``S3`` do determinado texto na imagem para o usuário.
   
-3 - O canal do chatbot Lex deverá ser de uso público e permitir o envio de som e imagem.
+  - Conversor de `Imagem` para `Texto`
+    - **Exemplos de Casos de Uso**
+      - Auxílio para pessoas em processos de aprendizagem (Resumos).
+      - Digitalização de Documentos.
 
-Dicas: procurem implementar uma aplicação de apelo social e busquem contatos com organizações públicas (universidades, associações, etc.).
+    - **Implementação**    
+      - Através do serviço ``Amazon Rekognition`` será gerado o texto referente a determinada imagem para o usuário.
+                
+  - Conversor de `Áudio` para `Texto`
+    - **Exemplos de Casos de Uso**
+      - Auxílio para pessoas com deficiência auditíva.
+      - Auxílio para pessoas em processos de aprendizagem (Podcast, Video Aulas).
+
+    - **Implementação**
+      - Através do serviço ``Amazon Transcribe`` será gerado o texto referente ao determinado áudio para o usuário.
+<!-- <a id="ancora3"></a>
+
+# 3 - Desenvolvimento do Projeto -->
+
+<!-- <a id="ancora4"></a>
+
+# 4 - Acesso à Aplicação e Como Utilizá-la
+
+<a id="ancora5"></a>
+
+# 5 - Estrutura de Pastas do Projeto -->
+
+
+<a id="ancora6"></a>
+
+# 6 - Arquitetura AWS
+
+  <div align="center">
+    <img src = "./assets/ArquiteturaAWS.png">
+  </div>
+
+
 
 ***
 
-## O que será avaliado
+<!-- <a id="ancora7"></a>
 
-- Praticidade de utilização
-- Eficácia da aplicação
-- Uso racional da arquitetura AWS
-- Projeto em produção na AWS
-- Códigos utilizados na implementação da arquitetura
-- Se usado o modelo para treinamento/reconhecimento:
-  - Divisão dos dados para treino e teste
-  - Taxa de assertividade aceitável (se o modelo está classificando corretamente)
-  - Entendimento da equipe sobre o modelo utilizado (saber explicar o que foi feito)
-  - Mostrar resposta do modelo para classificação
-- Organização geral do código fonte:
-  - Estrutura de pastas
-  - Divisão de responsabilidades em arquivos/pastas distintos
-  - Otimização do código fonte (evitar duplicações de código)
-- Objetividade do README.md
+# 7 - Dificuldades conhecidas -->
 
-***
+<a id="ancora8"></a>
+# 8 - Licença
 
-## Entrega
-
-- Aceitar o convite do repositório da sprint-9-10-pb-aws-ufu;
-- **O trabalho deve ser feito em dois grupos de cinco e um grupo de seis pessoas, que serão distribuídos em reunião dia 04/10/2023**;
-- **O tema do trabalho e o esboço da arquitetura deverá ser comunicado até dia 10/10/2023**;
-- Criar uma branch no repositório com o formato grupo-número (Exemplo: grupo-1);
-- **O grupo deverá fazer uma apresentação de protótipo (prova de conceito - PoC) em ensaio preliminar dia 24/10/2023**;
-- Subir o trabalho na branch com um README.md:
-  - documentar detalhes sobre como a avaliação foi desenvolvida
-  - dificuldades conhecidas
-  - como utilizar o sistema
-  - 🔨 código fonte desenvolvido (Sugestão: pasta `src`)
-- **Cada grupo deverá fazer uma apresentação do trabalho completo desenvolvido no dia 31/10/2023**.
-- O prazo de entrega é até às 12h do dia 08/11/2023 no repositório do github ([https://github.com/Compass-pb-aws-2023-FURG-IFRS-UFFS/sprint-9-10-pb-aws-furg-ifrs-uffs](https://github.com/Compass-pb-aws-2023-FURG-IFRS-UFFS/sprint-9-10-pb-aws-furg-ifrs-uffs)).
-
+Este projeto está licenciado sob a Licença MIT - consulte o [Link](https://mit-license.org/) para obter mais detalhes.
