@@ -1,8 +1,5 @@
-# placeholder
+# CC BOT
 
-Avaliação das sprints 9 e 10 do programa de bolsas Compass UOL para formação em machine learning para AWS.
-
----
 
 ## Integrantes
 
@@ -18,59 +15,47 @@ Avaliação das sprints 9 e 10 do programa de bolsas Compass UOL para formação
 
 <a href="https://github.com/Paulocc"><img src="https://img.shields.io/badge/-Paulo Sergio Nunes-000?&logo=github" height="25"></a>
 
-## Execução
 
-Deverá ser produzido um projeto final para apresentação pública ao final deste Programa de Bolsas.
+## Sumário
 
-**Especificações**:
+- [1 - Descrição do Projeto](#desc)
+- [2 - Funcionalidades](#func)
+- [3 - Arquitetura Preliminar da AWS](#apaws)
 
-A equipe devevá:
+<a id="desc"></a>
 
-1 - Escolher uma aplicação prática para implementação e definir a arquitetura preliminar AWS até 10/10/2023;
+## Descrição do Projeto
 
-2 - A aplicação deverá contemplar, no mínimo, as seguintes ferramentas AWS:
+Bem-vindo ao **CC BOT**, a sua inovadora assistência em comunicação para o curso de Ciência da Computação na UFFS! Nosso maior objetivo é proporcionar um portal de informações para calouros e alunos interessados. No **CC BOT**, nossa missão é levar informações sobre o curso de Ciência da Computação da UFFS a todos os alunos, de maneira acessível e inclusiva.
 
-- Transcribe e/ou Polly;
-- Rekognition;
-- Lex;
+Todas as informações estarão sendo retiradas dos sites oficiais do curso da universidade.
 
-3 - O canal do chatbot Lex deverá ser de uso público e permitir o envio de som e imagem.
+<a id="func"></a>
 
-Dicas: procurem implementar uma aplicação de apelo social e busquem contatos com organizações públicas (universidades, associações, etc.).
+## Funcionalidades
 
----
+**1. Contatos:**
 
-## O que será avaliado
+Precisa do e-mail de um professor? **CC BOT** tem todas as informações prontas para você. Seja para dúvidas acadêmicas ou questões específicas sobre o curso, estamos aqui para conectar você aos professores, técnicos, servidores e departamentos.
 
-- Praticidade de utilização
-- Eficácia da aplicação
-- Uso racional da arquitetura AWS
-- Projeto em produção na AWS
-- Códigos utilizados na implementação da arquitetura
-- Se usado o modelo para treinamento/reconhecimento:
-  - Divisão dos dados para treino e teste
-  - Taxa de assertividade aceitável (se o modelo está classificando corretamente)
-  - Entendimento da equipe sobre o modelo utilizado (saber explicar o que foi feito)
-  - Mostrar resposta do modelo para classificação
-- Organização geral do código fonte:
-  - Estrutura de pastas
-  - Divisão de responsabilidades em arquivos/pastas distintos
-  - Otimização do código fonte (evitar duplicações de código)
-- Objetividade do README.md
+**2. Cardápio do RU:**
 
----
+Mantenha-se atualizado com as opções diárias do Restaurante Universitário (RU). **CC BOT** fornece o cardápio de forma clara e rápida, para que você possa planejar suas refeições com facilidade.
 
-## Entrega
+**3. Notícias em Áudio:**
 
-- Aceitar o convite do repositório da sprint-9-10-pb-aws-ufu;
-- **O trabalho deve ser feito em dois grupos de cinco e um grupo de seis pessoas, que serão distribuídos em reunião dia 04/10/2023**;
-- **O tema do trabalho e o esboço da arquitetura deverá ser comunicado até dia 10/10/2023**;
-- Criar uma branch no repositório com o formato grupo-número (Exemplo: grupo-1);
-- **O grupo deverá fazer uma apresentação de protótipo (prova de conceito - PoC) em ensaio preliminar dia 24/10/2023**;
-- Subir o trabalho na branch com um README.md:
-  - documentar detalhes sobre como a avaliação foi desenvolvida
-  - dificuldades conhecidas
-  - como utilizar o sistema
-  - 🔨 código fonte desenvolvido (Sugestão: pasta `src`)
-- **Cada grupo deverá fazer uma apresentação do trabalho completo desenvolvido no dia 31/10/2023**.
-- O prazo de entrega é até às 12h do dia 08/11/2023 no repositório do github ([https://github.com/Compass-pb-aws-2023-FURG-IFRS-UFFS/sprint-9-10-pb-aws-furg-ifrs-uffs](https://github.com/Compass-pb-aws-2023-FURG-IFRS-UFFS/sprint-9-10-pb-aws-furg-ifrs-uffs)).
+Fique por dentro das últimas notícias do curso. **CC BOT** oferece uma experiência única, apresentando notícias relevantes em formato de áudio para tornar a sua experiência ainda mais acessível.
+
+**4. Horários:**
+
+Precisa saber os dias ou horários das aulas, e os professores ministrantes? **CC BOT** está aqui para fornecer informações atualizadas sobre os horários, garantindo que você esteja sempre no lugar certo, na hora certa.
+
+**5. Documentos:**
+
+Explore a grade curricular do curso, consulte facilmente os pré-requisitos necessários para cada disciplina, ou o que tiver interesse. **CC BOT** está aqui para tornar a navegação entre os documentos oficiais uma experiência simplificada.
+
+<a id="apaws"></a>
+
+## Arquitetura Preliminar da AWS
+
+![arquitetura aws](./assets/diagam-aws.png "Arquitetura AWS")
