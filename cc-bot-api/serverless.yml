@@ -1,0 +1,23 @@
+service: cc-bot-api
+frameworkVersion: '3'
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+  environment: 
+    MSG: ${env:MSG}
+
+functions:
+  health:
+    handler: routes/empty_route.atomicbp
+    events:
+      - httpApi:
+          path: /
+          method: get
+          
+plugins:
+  - serverless-offline
+  - serverless-python-requirements
