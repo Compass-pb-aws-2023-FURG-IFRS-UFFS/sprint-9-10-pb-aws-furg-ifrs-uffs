@@ -4,6 +4,6 @@ async function textToSpeech(event, context) {
 
   // Code
   return handleResponse(200, "textToSpeech")
-};
+}
 
-module.exports = textToSpeech
+module.exports = { textToSpeech }

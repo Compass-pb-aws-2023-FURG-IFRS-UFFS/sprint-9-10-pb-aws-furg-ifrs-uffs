@@ -65,12 +65,33 @@ resources:
                     - "/*"
 
 functions:
-  age:
-    handler: handler.hello
+  textToSpeech:
+    handler: controllers/textToSpeech.textToSpeech
     events:
       - http:
-          path: /hello
+          path: /textToSpeech
+          method: post
+  speechToText:
+    handler: controllers/speechToText.speechToText
+    events:
+      - http:
+          path: /speechToText
+          method: post
+  imageToSpeech:
+    handler: controllers/imageToSpeech.imageToSpeech
+    events:
+      - http:
+          path: /imageToSpeech
+          method: post
+  imageToText:
+    handler: controllers/imageToText.imageToText
+    events:
+      - http:
+          path: /imageToText
           method: post
 
 plugins:
   - serverless-offline
+custom:
+  serverless-offline:
+    host: '127.0.0.1'
