@@ -1,0 +1,11 @@
+{
+  "files.exclude": {
+    "**/node_modules": true
+  },
+  "rest-client.environmentVariables": {
+    "sandbox": {
+      "host": "https://your-api-url-here.amazonaws.com"
+    },
+    "production": {}
+  }
+}

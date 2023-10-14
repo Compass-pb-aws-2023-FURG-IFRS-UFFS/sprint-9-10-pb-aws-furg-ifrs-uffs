@@ -1,0 +1,30 @@
+{
+  "name": "sprint-9-10-pb-aws-furg-ifrs-uffs",
+  "version": "1.0.0",
+  "description": "Projeto final do programa de bolsas Compass-pb-aws-2023-FURG-IFRS-UFFS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Compass-pb-aws-2023-FURG-IFRS-UFFS/sprint-9-10-pb-aws-furg-ifrs-uffs.git"
+  },
+  "keywords": [],
+  "author": "Josué Fernandes, Luiz Scarsi, John Silveira, Yuri Souza",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Compass-pb-aws-2023-FURG-IFRS-UFFS/sprint-9-10-pb-aws-furg-ifrs-uffs/issues"
+  },
+  "homepage": "https://github.com/Compass-pb-aws-2023-FURG-IFRS-UFFS/sprint-9-10-pb-aws-furg-ifrs-uffs#readme",
+  "devDependencies": {
+    "serverless-offline": "^13.2.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-polly": "^3.428.0",
+    "@aws-sdk/client-rekognition": "^3.428.0",
+    "@aws-sdk/client-s3": "^3.428.0",
+    "@aws-sdk/client-transcribe": "^3.428.0",
+    "dotenv": "^16.3.1"
+  }
+}
