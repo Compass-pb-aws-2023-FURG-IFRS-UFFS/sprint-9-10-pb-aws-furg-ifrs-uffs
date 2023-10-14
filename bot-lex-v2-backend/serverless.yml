@@ -5,9 +5,10 @@ useDotenv: true
 provider:
   name: aws
   runtime: python3.8
+  stage: dev
   region: us-east-1 
   environment:
-    SNS_TOPIC_ARN: ${env:SNS_TOPIC_ARN}
+    SNS_TOPIC_ARN: ${ssm:uffs-bot-developers-topic-arn}
     ContactUsIntent: ${env:ContactUsIntent}
   iam:
     role:
@@ -18,7 +19,7 @@ provider:
           Resource: "*"
         - Effect: Allow
           Action: sns:Publish
-          Resource: ${env:SNS_TOPIC_ARN}
+          Resource: ${self:provider.environment.SNS_TOPIC_ARN}
 
 
 functions:
@@ -28,7 +29,7 @@ functions:
   router:
     handler: router.handle_router
 
-	
+
 plugins:
   - serverless-offline
   - serverless-python-requirements
