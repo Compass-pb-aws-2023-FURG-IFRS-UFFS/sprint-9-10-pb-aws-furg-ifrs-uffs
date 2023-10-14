@@ -1,0 +1,20 @@
+service: equitalk-middleware
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1 
+
+functions:
+  handleIntent:
+    handler: handler.handleIntent
+    events:
+      - http:
+          path: /handleIntent
+          method: post
+
+plugins:
+  - serverless-offline
+custom:
+  serverless-offline:
+    host: '127.0.0.1'
