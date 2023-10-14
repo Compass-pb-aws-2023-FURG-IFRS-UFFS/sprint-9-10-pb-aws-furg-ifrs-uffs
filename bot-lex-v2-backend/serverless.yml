@@ -1,0 +1,34 @@
+service: uffs-bot-backend
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-east-1 
+  environment:
+    SNS_TOPIC_ARN: ${env:SNS_TOPIC_ARN}
+    ContactUsIntent: ${env:ContactUsIntent}
+  iam:
+    role:
+      name: role-for-lambda-lex-bot
+      statements:
+        - Effect: Allow
+          Action: lambda:InvokeFunction
+          Resource: "*"
+        - Effect: Allow
+          Action: sns:Publish
+          Resource: ${env:SNS_TOPIC_ARN}
+
+
+functions:
+  contactUsIntent:
+    handler: handlers/contact_us.handle_contact_us_intent
+
+  router:
+    handler: router.handle_router
+
+	
+plugins:
+  - serverless-offline
+  - serverless-python-requirements
