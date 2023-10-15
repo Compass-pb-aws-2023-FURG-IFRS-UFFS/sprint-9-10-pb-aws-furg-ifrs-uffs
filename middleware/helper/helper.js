@@ -1,15 +1,15 @@
 
 function isImage(content) {
-  return content.split("/")[0] == "image"
+  return content == "image"
 }
 
 function isFormatSupported(content) {
   const types = ["png", "jpeg", "mp3", "ogg"]
 
-  return types.includes(content.split("/")[1])
+  return types.includes(content)
 }
 function isAudio(content) {
-  return content.split("/")[0] == "audio"
+  return content == "audio"
 }
 
 module.exports = { isAudio, isImage, isFormatSupported }
