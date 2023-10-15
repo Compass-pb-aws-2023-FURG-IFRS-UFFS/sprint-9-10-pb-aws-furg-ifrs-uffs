@@ -6,12 +6,14 @@ provider:
   runtime: nodejs14.x
   region: us-east-1 
   environment:
-    BOT_ARN: ${env:BOT_ARN}
-    ACCOUNT_SID: ${env:ACCOUNT_SID}
-    AUTH_TOKEN: ${env:AUTH_TOKEN}
+    BUCKET_NAME: ${env:BUCKET_NAME}
+    PRINCIPAL_ARN: ${env:PRINCIPAL_ARN}
     BOT_ID: ${env:BOT_ID}
     BOT_ALIAS_ID: ${env:BOT_ALIAS_ID}
     LOCALE_ID: ${env:LOCALE_ID}
+    BOT_ARN: ${env:BOT_ARN}
+    ACCOUNT_SID: ${env:ACCOUNT_SID}
+    AUTH_TOKEN: ${env:AUTH_TOKEN}
     TWILIO_DEFAULT_NUMBER: ${env:TWILIO_DEFAULT_NUMBER}
   iam:
     role:
@@ -21,6 +23,59 @@ provider:
           Action:
             - "lex:RecognizeText"
           Resource: ${env:BOT_ARN}
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:GetObjectAttributes
+            - s3:PutObject
+          Resource:
+            - arn:aws:s3:::${env:BUCKET_NAME}/*
+        - Effect: Allow
+          Action:
+            - transcribe:StartTranscriptionJob
+            - polly:SynthesizeSpeech
+            - rekognition:DetectText
+          Resource: "*"
+
+resources:
+  Resources:
+    MyS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${env:BUCKET_NAME}
+        PublicAccessBlockConfiguration:
+          BlockPublicPolicy: false
+          RestrictPublicBuckets: false
+    
+    MyBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: MyS3Bucket
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                AWS: "*"
+              Action: s3:GetObject
+              Resource:
+                Fn::Join:
+                  - ""
+                  - - "arn:aws:s3:::"
+                    - Ref: MyS3Bucket
+                    - "/*"
+            - Effect: Allow
+              Principal:
+                AWS: ${env:PRINCIPAL_ARN}
+              Action: s3:PutObject
+              Resource:
+                Fn::Join:
+                  - ""
+                  - - "arn:aws:s3:::"
+                    - Ref: MyS3Bucket
+                    - "/*"
+                    
 functions:
   handleIntent:
     handler: handler.handleIntent

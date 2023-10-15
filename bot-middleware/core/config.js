@@ -3,6 +3,7 @@ require('dotenv').config({ path: path.resolve(__dirname, "../.env") })
 
 class Settings{
   constructor(){
+    this.BUCKET_NAME = process.env.BUCKET_NAME
     this.ACCOUNT_SID = process.env.ACCOUNT_SID
     this.AUTH_TOKEN = process.env.AUTH_TOKEN
     this.BOT_ID = process.env.BOT_ID
