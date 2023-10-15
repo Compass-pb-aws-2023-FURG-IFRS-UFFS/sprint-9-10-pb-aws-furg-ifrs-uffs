@@ -1,0 +1,36 @@
+service: equitalk-middleware
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1 
+  environment:
+    BOT_ARN: ${env:BOT_ARN}
+    ACCOUNT_SID: ${env:ACCOUNT_SID}
+    AUTH_TOKEN: ${env:AUTH_TOKEN}
+    BOT_ID: ${env:BOT_ID}
+    BOT_ALIAS_ID: ${env:BOT_ALIAS_ID}
+    LOCALE_ID: ${env:LOCALE_ID}
+    TWILIO_DEFAULT_NUMBER: ${env:TWILIO_DEFAULT_NUMBER}
+  iam:
+    role:
+      name: role-for-equitalk-middleware
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "lex:RecognizeText"
+          Resource: ${env:BOT_ARN}
+functions:
+  handleIntent:
+    handler: handler.handleIntent
+    events:
+      - http:
+          path: /handleIntent
+          method: post
+
+plugins:
+  - serverless-offline
+custom:
+  serverless-offline:
+    host: '127.0.0.1'

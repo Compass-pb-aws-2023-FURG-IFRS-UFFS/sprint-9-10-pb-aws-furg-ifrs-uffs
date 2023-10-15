@@ -21,7 +21,8 @@ class LexService {
       const response = await this.lexClient.send(command);
       return response.messages[0].content;
     } catch (error) {
-      console.error("Error to send a messago to Amazon Lex V2:", error);
+      console.error("Error to send a message to Amazon Lex V2:", error);
+      throw new Error("Error in amazon lex")
     }
   }
 }

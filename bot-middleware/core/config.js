@@ -8,6 +8,7 @@ class Settings{
     this.BOT_ID = process.env.BOT_ID
     this.BOT_ALIAS_ID = process.env.BOT_ALIAS_ID
     this.LOCALE_ID = process.env.LOCALE_ID
+    this.TWILIO_DEFAULT_NUMBER = process.env.TWILIO_DEFAULT_NUMBER
   }
 }
 
