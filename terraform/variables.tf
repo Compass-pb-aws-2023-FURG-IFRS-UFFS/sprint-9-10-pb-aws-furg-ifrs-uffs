@@ -10,4 +10,8 @@ variable "subscriptions"{
     description = "List of SNS subscriptions"
 }
 
+variable "bucket_name" {
+  description = "Name of the S3 bucket to store the images"
+  default = "teste-terraform-2021-04-27"
+}
 
