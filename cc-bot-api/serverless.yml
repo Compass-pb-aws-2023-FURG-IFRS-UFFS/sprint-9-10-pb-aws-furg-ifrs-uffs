@@ -17,6 +17,13 @@ functions:
       - httpApi:
           path: /
           method: get
+  news:
+    handler: routes/news_route.news_route
+    events:
+      - httpApi:
+          path: /news
+          method: get
+
           
 plugins:
   - serverless-offline
