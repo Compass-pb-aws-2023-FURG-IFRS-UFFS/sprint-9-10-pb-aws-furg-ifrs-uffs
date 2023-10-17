@@ -22,11 +22,12 @@ const ResultPage = ({ location }) => {
         <div>
           <p>Status: {data.status}</p>
           <p>Confidence: {data.confidence}</p>
+          <p>Key: {data.key}</p>
         </div>
       )}
       {data && data.status !== 'SUCCEEDED' && (
         <div>
-          <p>Analysis failed with status: {data.status}</p>
+          <p>Analise falhou: {data.status}</p>
         </div>
       )}
     </div>

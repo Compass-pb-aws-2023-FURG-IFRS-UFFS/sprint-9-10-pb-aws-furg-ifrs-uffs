@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+import pytz
 
 def create_response(statusCode, body=''):
     """
@@ -25,4 +27,4 @@ def get_formatted_datetime():
      @return A string of the form YYYY - MM - DD HH : MM :
     """
     brazil_timezone = pytz.timezone('America/Sao_Paulo')
-    return datetime.now(brazil_timezone).strftime("%d/%m/%y %H:%M:%S")
+    return datetime.now(brazil_timezone).strftime("%d-%m-%y %H:%M:%S")
