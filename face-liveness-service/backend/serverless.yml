@@ -1,0 +1,58 @@
+service: auth-service-backend
+frameworkVersion: '3'
+useDotenv: true
+provider:
+  name: aws
+  runtime: python3.9
+  environment:
+    BUCKET_NAME: ${env:BucketName}
+  iam:
+    role:
+      name: iam-for-lambda-tts
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+          Resource:
+            - arn:aws:s3:::${env:BucketName}/*
+        - Effect: Allow
+          Action:
+            - rekognition:*
+          Resource:
+            - "*"
+      
+resources:
+  Resources:
+    MyS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${env:BucketName}
+
+functions:
+  createLivenessSession:
+    handler: create_liveness_session.handler
+    events:
+      - http:
+          path: /create
+          method: get
+          cors: true
+
+  getLivenessSessionResults:
+    handler: get_liveness_session_results.handler
+    events:
+      - http:
+          path: /results
+          method: post
+          cors: true
+
+      
+
+plugins:
+  - serverless-offline
+  - serverless-python-requirements
+
+package:
+  exclude:
+    - node_modules/**
+    - venv/**
