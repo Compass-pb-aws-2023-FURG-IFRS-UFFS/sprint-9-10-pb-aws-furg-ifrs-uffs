@@ -4,6 +4,7 @@ const {
 } = require("@aws-sdk/client-lex-runtime-v2");
 const { BOT_ID, BOT_ALIAS_ID, LOCALE_ID } = require("../core/config");
 const PollyService = require("./PollyService");
+const TranscribeService = require("./TranscribeService");
 
 class LexService {
   constructor() {
@@ -30,6 +31,11 @@ class LexService {
         const audio = await pollyService.textToSpeech(message);
         console.log(audio);
         return audio;
+      } else if (intentName == "Speech-to-Text") {
+        const transcribeService = new TranscribeService();
+        const text = await transcribeService.transcribeMessage(message);
+        console.log(text);
+        return text;
       }
       return response.messages[0].content;
     } catch (error) {

@@ -13,6 +13,7 @@ class Settings{
     this.REGION = process.env.REGION
     this.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID
     this.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY
+    this.TRANSCRIBE_NAME = process.env.TRANSCRIBE_NAME
   }
 }
 
