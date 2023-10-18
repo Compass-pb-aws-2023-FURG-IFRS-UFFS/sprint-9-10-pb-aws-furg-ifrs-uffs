@@ -27,12 +27,9 @@ def check_expiration(student, expiration_in_minutes = 20):
 
 def handler(event, context):
     try:
-        print(event)
         body = json.loads(event['body'])
-        print(body)
         token, student_id = get_data_from_body(body)
         student = get_student_from_id(student_id)
-        print(student)
         if not student:
             return create_response(404, create_body(False,'Matricula não encontrada'))
         if not student.get('token') == token:
@@ -44,7 +41,6 @@ def handler(event, context):
         traceback.print_exc()
         return create_response(create_body(400,str(ve)))
     except Exception as e:
-        print(str)
         traceback.print_exc()
         return create_response(500, create_body(False, 'Algo deu errado na verificação do token'))
     
