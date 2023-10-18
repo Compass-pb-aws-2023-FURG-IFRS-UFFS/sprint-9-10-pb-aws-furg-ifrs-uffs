@@ -1,5 +1,4 @@
 from services.rekognition_service import get_liveness_session_results, compare_faces
-from services.bucket_service import save_to_bucket
 from services.dynamodb_service import *
 from utils import create_response
 import traceback
@@ -12,8 +11,8 @@ def handler(event, context):
         student_id = body['student_id']
         liveness_results = get_liveness_session_results(session_id)
         if float(liveness_results.get('Confidence')) > 50.0:
-            key = save_to_bucket(liveness_results['ReferenceImage'].get('Bytes'))
-            token = authenticate(student_id, key)
+            liveness_image = liveness_results['ReferenceImage'].get('Bytes')
+            token = authenticate(student_id, liveness_image)
             if token:
                 return create_response(200, {"status": "SUCCEEDED", "token": token })
             return create_response(200, {"status": "Não deu match de rostos"})

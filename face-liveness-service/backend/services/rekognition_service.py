@@ -17,11 +17,9 @@ def create_image_object(key, bucket = settings.BUCKET_NAME):
 def compare_faces(student, liveness):
     student_image = student['image_key']
     student_image = create_image_object(f'users/{student_image}')
-    liveness_image = create_image_object(f'liveness/{liveness}')
-
     response = rekognition.compare_faces(
         SourceImage=student_image,
-        TargetImage=liveness_image,
+        TargetImage={'Bytes': liveness},
     )
     print(response)
     similarities = []
