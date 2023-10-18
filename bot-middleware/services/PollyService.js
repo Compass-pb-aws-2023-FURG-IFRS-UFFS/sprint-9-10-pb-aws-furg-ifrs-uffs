@@ -1,7 +1,16 @@
 const createHash = require("../helper/utils").createHash;
 const {PollyClient,SynthesizeSpeechCommand} = require("@aws-sdk/client-polly");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-const {REGION,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,BUCKET_NAME} = require("../core/config");
+const {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const {REGION,
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY,
+  BUCKET_NAME,
+} = require("../core/config");
 
 const params = {
   region: REGION,
@@ -17,12 +26,12 @@ class PollyService {
   }
 
   /**
-  * Converts text to speech. Speech is stored in S3 so it can be played in other applications
-  * 
-  * @param text - The text to synthesize.
-  * 
-  * @return { Buffer } The audio as a Buffer. If an error occurs the Buffer will be
-  */
+   * Converts text to speech. Speech is stored in S3 so it can be played in other applications
+   *
+   * @param text - The text to synthesize.
+   *
+   * @return {string} The URL of the audio file in S3. If an error occurs, returns null.
+   */
   async textToSpeech(text) {
     const speechParams = {
       Text: text,
@@ -47,18 +56,32 @@ class PollyService {
 
       const s3Params = {
         Bucket: BUCKET_NAME,
-        Key: "audio_" + createHash(text) + ".mp3",
+        Key:
+          "audio_" +
+          createHash(text) +
+          ".mp3",
         Body: audio,
       };
 
       const s3Command = new PutObjectCommand(s3Params);
       const s3Response = await s3Client.send(s3Command);
-      
+
       console.log(s3Response);
 
-      return audio;
+      // Get the URL of the audio file in S3
+      const urlParams = {
+        Bucket: BUCKET_NAME,
+        Key: s3Params.Key,
+        Expires: 3600, // URL expires in 1 hour
+      };
+      const url = await getSignedUrl(
+        s3Client,
+        new GetObjectCommand(urlParams)
+      );
+      return url;
     } catch (err) {
       console.log(err);
+      return null;
     }
   }
 }

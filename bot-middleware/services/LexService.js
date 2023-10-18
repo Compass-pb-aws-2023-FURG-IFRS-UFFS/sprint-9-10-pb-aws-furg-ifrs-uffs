@@ -23,21 +23,23 @@ class LexService {
     const command = new RecognizeTextCommand(params);
 
     try {
-      const response = await this.lexClient.send(command);
-      console.log("Response from Amazon Lex V2:", response);
-      const intentName = response.interpretations[0].intent.name;
+      const returnLex = await this.lexClient.send(command);
+      let response = "";
+      console.log("Response from Amazon Lex V2:", returnLex);
+      const intentName = returnLex.interpretations[0].intent.name;      
+      console.log("Intent name:", intentName);
       if (intentName == "Text-to-Speech") {
         const pollyService = new PollyService();
-        const audio = await pollyService.textToSpeech(message);
-        console.log(audio);
-        return audio;
-      } else if (intentName == "Speech-to-Text") {
+        response = await pollyService.textToSpeech(message);
+        console.log("URL do audio: " + response);
+      } else if (intentName == "Speech-to-Text") {        
         const transcribeService = new TranscribeService();
-        const text = await transcribeService.transcribeMessage(message);
-        console.log(text);
-        return text;
+        response = await transcribeService.transcribeMessage(message);
+        console.log("Transcribe response:", response);
+      }else{
+        response = returnLex.messages[0].content;
       }
-      return response.messages[0].content;
+      return response;
     } catch (error) {
       console.error("Error to send a message to Amazon Lex V2:", error);
       throw new Error("Error in amazon lex");

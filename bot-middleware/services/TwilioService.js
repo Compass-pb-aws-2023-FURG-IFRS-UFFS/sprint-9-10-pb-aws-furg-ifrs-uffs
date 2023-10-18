@@ -26,9 +26,10 @@ class TwilioService {
       from: TWILIO_DEFAULT_NUMBER,
       to: recipientNumber,
       // mediaUrl: 'https://demo.twilio.com/owl.png'
-      mediaUrl: "https://equitalk-bucket-john-new.s3.amazonaws.com/Sirene.mp3",
+      mediaUrl: body,// "https://equitalk-bucket-john-new-2.s3.us-east-1.amazonaws.com/audio_391ea1004aa07a355c3c5d3a92fb60e1692ea3fa5d6685c1deee43d8ecbcaa75.mp3",
       //mediaUrl: "https://equitalk-bucket-john-new.s3.amazonaws.com/Teste.mp4"
     };
+    console.log("Params: ", params);
     try {
       await this.twilioClient.messages.create(params);
     } catch (error) {
