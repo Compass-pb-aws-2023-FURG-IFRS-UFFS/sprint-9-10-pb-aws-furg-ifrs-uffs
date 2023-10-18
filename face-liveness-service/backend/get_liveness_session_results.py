@@ -54,7 +54,7 @@ def get_student_from_id(student_id, table = os.environ.get('DYNAMO_DB_USERS_TABL
     db = boto3.resource('dynamodb')
     table = db.Table(table)
 
-    student = table.get_item(Key = {'matricula':student_id})
+    student = table.get_item(Key = {'id':student_id})
 
     if student:
         return student['Item']
@@ -100,7 +100,7 @@ def update_student(student, table = os.environ.get('DYNAMO_DB_USERS_TABLE')):
 
     # Update item in DynamoDB
     table.update_item(
-        Key={'matricula': student['matricula']},
+        Key={'id': student['id']},
         UpdateExpression=update_expression,
         ExpressionAttributeValues=expression_attribute_values,
         ExpressionAttributeNames=expression_attribute_names,

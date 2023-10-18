@@ -10,7 +10,7 @@ variable "subscriptions" {
   description = "List of SNS subscriptions"
 }
 
-variable "bucket_lost_and_found_name" {
+variable "auth_bucket" {
   description = "Name of the S3 bucket to store the images"
 }
 
@@ -26,3 +26,6 @@ variable "db_table_intents_data_name" {
   description = "Name of the DynamoDB table to store the intents data"
 }
 
+variable "db_table_cc_bot_users"{
+  description = "Name of the DynamoDB table to store the user images"
+}

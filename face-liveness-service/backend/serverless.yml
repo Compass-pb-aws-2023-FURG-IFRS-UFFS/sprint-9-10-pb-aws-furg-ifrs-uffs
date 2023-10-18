@@ -1,12 +1,12 @@
 service: auth-service-backend
 frameworkVersion: '3'
-useDotenv: true
 provider:
   name: aws
   runtime: python3.9
   environment:
-    BUCKET_NAME: ${env:BucketName}
-    DYNAMO_DB_USERS_TABLE: ${env:DYNAMO_DB_USERS_TABLE}
+    BUCKET_NAME: ${ssm:uffs-bot-auth-bucket-name}
+    DYNAMO_DB_USERS_TABLE: ${ssm:uffs-bot-users-table-name}
+
   iam:
     role:
       name: iam-for-lambda-tts
@@ -16,7 +16,7 @@ provider:
             - s3:GetObject
             - s3:PutObject
           Resource:
-            - arn:aws:s3:::${env:BucketName}/*
+            - arn:aws:s3:::${self:provider.environment.BUCKET_NAME}/*
         - Effect: Allow
           Action:
             - rekognition:*
@@ -28,15 +28,8 @@ provider:
             - dynamodb:GetItem
             - dynamodb:UpdateItem
           Resource:
-            - arn:aws:dynamodb:us-east-1:*:table/${env:DYNAMO_DB_USERS_TABLE}
+            - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.DYNAMO_DB_USERS_TABLE}
       
-resources:
-  Resources:
-    MyS3Bucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${env:BucketName}
-
 functions:
   createLivenessSession:
     handler: create_liveness_session.handler

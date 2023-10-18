@@ -126,3 +126,20 @@ resource "aws_dynamodb_table" "lost_and_found" {
   }
   tags = local.common_tags
 }
+
+resource "aws_dynamodb_table" "bot-users-table" {
+  name         = var.db_table_cc_bot_users
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "id"
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+}
+
+resource "aws_ssm_parameter" "bot-users-table-name"{
+  name = "uffs-bot-users-table-name"
+  type = "String"
+  value = aws_dynamodb_table.bot-users-table.name
+}
