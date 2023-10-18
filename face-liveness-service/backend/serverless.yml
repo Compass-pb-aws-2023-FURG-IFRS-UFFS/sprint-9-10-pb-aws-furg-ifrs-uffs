@@ -47,6 +47,14 @@ functions:
           method: post
           cors: true
 
+  tokenExpirationCheck:
+    handler: token_expiration_check.handler
+    events:
+      - http: 
+          path: /token
+          method: post
+          cors: true
+
       
 
 plugins:

@@ -9,9 +9,7 @@ database_table = dynamodb.Table(settings.DYNAMODB_USERS_TABLE)
 
 def get_student_from_id(student_id, table=database_table):
     student = table.get_item(Key = {'id':student_id})
-
-    if student:
-        return student['Item']
+    return student.get('Item', None)
     
 
 def update_student(student, table = database_table):
