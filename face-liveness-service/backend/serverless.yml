@@ -39,8 +39,8 @@ functions:
           method: get
           cors: true
 
-  getLivenessSessionResults:
-    handler: get_liveness_session_results.handler
+  authenticate:
+    handler: authenticate.handler
     events:
       - http:
           path: /results
