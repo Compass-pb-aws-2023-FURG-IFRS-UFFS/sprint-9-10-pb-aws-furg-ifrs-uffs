@@ -14,6 +14,12 @@
     "categories": {
       "auth": {
         "faceLiveness": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d21adspqtm1mx4",
+          "type": "manual"
+        }
       }
     }
   }

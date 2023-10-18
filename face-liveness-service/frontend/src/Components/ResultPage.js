@@ -1,5 +1,5 @@
 import React from 'react';
-import {useLocation} from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 
 const ResultPage = ({ location }) => {
   location = useLocation();
@@ -9,6 +9,8 @@ const ResultPage = ({ location }) => {
       <div>
         <h2>Resultado da análise</h2>
         <p>Tivemos alguns problemas.</p>
+        <Link to="/">Tente novamente</Link>
+
       </div>
     );
   }
@@ -21,8 +23,8 @@ const ResultPage = ({ location }) => {
       {data && data.status === 'SUCCEEDED' && (
         <div>
           <p>Status: {data.status}</p>
-          <p>Confidence: {data.confidence}</p>
-          <p>Key: {data.key}</p>
+          {/* <p>Confidence: {data.confidence}</p> */}
+          <p>Key: {data.token}</p>
         </div>
       )}
       {data && data.status !== 'SUCCEEDED' && (
