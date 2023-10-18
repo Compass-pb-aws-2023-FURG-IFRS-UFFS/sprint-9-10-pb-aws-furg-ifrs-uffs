@@ -20,18 +20,18 @@ class TranscribeService {
         TranscriptionJobName: TRANSCRIBE_NAME,
         LanguageCode: LOCALE_ID,
         // MediaFormat: "mp3" || "mp4" || "wav" || "flac" || "ogg" || "amr" || "webm" || "m4a",
+        MediaFormat: "mp3",
         Media: {
-          MediaFileUri: new GetObjectCommand({
-            "Bucket": BUCKET_NAME,
-            "Key": audioFile,
-          }),
+          MediaFileUri: audioFile
         },
+        OutputBucketName: BUCKET_NAME,
       }
 
       try {
         const command = new StartTranscriptionJobCommand(transcribeParams);
         const response = await this.transcribeClient.send(command);
         console.log("Success - put", response);
+        console.log("Waiting for transcription to complete...");
         return response;
       } catch (err){
         console.log("Error to transcribe a message in Amazon Transcribe", err);
