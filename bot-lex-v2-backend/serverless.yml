@@ -20,7 +20,14 @@ provider:
         - Effect: Allow
           Action: sns:Publish
           Resource: ${self:provider.environment.SNS_TOPIC_ARN}
-
+        - Effect: Allow
+          Action: lex:*
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - lex:RecognizeText
+            - lex:StartConversation
+          Resource: "arn:aws:lex:us-east-1:433097106475:bot/UffsBot/alias/TelegramAlias/*"
 
 functions:
   contactUsIntent:
@@ -29,6 +36,13 @@ functions:
   router:
     handler: router.handle_router
 
+  telegramToLex:
+    handler: lambdas/endpoints/telegramToLex.lambda_handler
+    events:
+      - http:
+          path: telegram-webhook
+          method: POST
+          cors: true
 
 plugins:
   - serverless-offline
