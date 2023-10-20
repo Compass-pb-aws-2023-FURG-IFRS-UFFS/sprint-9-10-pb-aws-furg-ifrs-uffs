@@ -1,6 +1,10 @@
 from datetime import datetime
 import pytz
-
+import boto3
+import hashlib
+import json
+import random
+import string
 
 def create_response(event, msgText):
   response = {
@@ -26,9 +30,19 @@ def create_response(event, msgText):
 
 
 def get_formatted_datetime():
-    """
-     Returns date and time in human readable format.
-     @return A string of the form YYYY - MM - DD HH : MM :
-    """
     brazil_timezone = pytz.timezone('America/Sao_Paulo')
     return datetime.now(brazil_timezone).strftime("%d/%m/%y %H:%M:%S")
+
+def parse_event_body(event, required_params=None):
+
+    if event.get("body") == None:
+        raise Exception("Invalid input: Missing body")
+    
+    body = json.loads(event["body"]) if type(event["body"]) is not dict else event["body"]
+
+    if required_params:
+        for required_param in required_params:
+            if body.get(required_param) == None:
+                raise Exception(f"Invalid input: Missing {required_param} param")
+    
+    return body

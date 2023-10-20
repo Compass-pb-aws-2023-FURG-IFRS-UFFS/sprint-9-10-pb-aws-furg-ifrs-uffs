@@ -10,9 +10,12 @@ provider:
   environment:
     SNS_TOPIC_ARN: ${ssm:uffs-bot-developers-topic-arn}
     ContactUsIntent: ${env:ContactUsIntent}
+    LEX_BOT_ID: ${env:BOT_ID}
+    LEX_ALIAS_ID: ${env:BOT_ALIAS_ID}
+    TELEGRAM_TOKEN: ${env:TELEGRAM_TOKEN}
   iam:
     role:
-      name: role-for-lambda-lex-bot
+      name: role-for-middleware-lambda-lex-bot
       statements:
         - Effect: Allow
           Action: lambda:InvokeFunction
@@ -37,7 +40,7 @@ functions:
     handler: router.handle_router
 
   telegramToLex:
-    handler: lambdas/endpoints/telegramToLex.lambda_handler
+    handler: middleware/telegramToLex.telegram_handler
     events:
       - http:
           path: telegram-webhook
