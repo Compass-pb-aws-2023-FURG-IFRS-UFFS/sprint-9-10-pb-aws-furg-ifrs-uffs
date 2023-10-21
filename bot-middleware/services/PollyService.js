@@ -1,7 +1,6 @@
 const createHash = require("../helper/helper").createHash;
 const {PollyClient,SynthesizeSpeechCommand} = require("@aws-sdk/client-polly");
 const {S3Client,PutObjectCommand} = require("@aws-sdk/client-s3");
-const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const {REGION,
   AWS_ACCESS_KEY_ID,
   AWS_SECRET_ACCESS_KEY,
@@ -73,12 +72,6 @@ class PollyService {
 
       // Returns URL to S3 bucket with parameters set in params.
       const url = "https://" + BUCKET_NAME + ".s3.amazonaws.com/" + s3Params.Key;
-
-      // Get the URL to use for the signature request. This is a wrapper around ` s3Client `
-      const urlSigned = await getSignedUrl(
-        s3Client,
-        new GetObjectCommand(urlParams)
-      );
 
       return url;
 
