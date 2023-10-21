@@ -26,12 +26,15 @@ class LexService {
       const returnLex = await this.lexClient.send(command);
       let response = "";
       console.log("Response from Amazon Lex V2:", returnLex);
-      const intentName = returnLex.interpretations[0].intent.name;      
-      console.log("Intent name:", intentName);
+      const intentName = returnLex.interpretations[0].intent.name; 
       if (intentName == "Text-to-Speech") {
-        const pollyService = new PollyService();
-        response = await pollyService.textToSpeech(message);
-        console.log("URL do audio: " + response);
+        const sessionState = returnLex.sessionState.dialogAction.type;
+        if (sessionState == "ElicitSlot") {
+          response = returnLex.messages[0].content;
+        } else {
+          const pollyService = new PollyService();
+          response = await pollyService.textToSpeech(message);
+        }
       } else if (intentName == "Speech-to-Text") {        
         const transcribeService = new TranscribeService();
         response = await transcribeService.transcribeMessage(message);
