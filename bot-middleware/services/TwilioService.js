@@ -29,7 +29,7 @@ class TwilioService {
   /**
   * Send a media message to a phone number. You must have the S3 bucket on the account to use this method
   * 
-  * @param body - The text of the message
+  * @param body - The url of the media to send
   * @param recipientNumber - The number of the recipient to send the message
   */
   async sendMedia(body, recipientNumber) {
@@ -37,7 +37,6 @@ class TwilioService {
       //body: body,
       from: TWILIO_DEFAULT_NUMBER,
       to: recipientNumber,
-      play: "true",
       mediaUrl: [
         body //"https://equitalk-bucket-john-new-1.s3.amazonaws.com/audio_391ea1004aa07a355c3c5d3a92fb60e1692ea3fa5d6685c1deee43d8ecbcaa75.mp3",
       ]

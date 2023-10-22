@@ -1,6 +1,6 @@
 const createHash = require("../helper/helper").createHash;
 const {PollyClient,SynthesizeSpeechCommand} = require("@aws-sdk/client-polly");
-const {S3Client,PutObjectCommand} = require("@aws-sdk/client-s3");
+const {S3Client,PutObjectCommand, S3} = require("@aws-sdk/client-s3");
 const {REGION,
   AWS_ACCESS_KEY_ID,
   AWS_SECRET_ACCESS_KEY,
@@ -12,6 +12,8 @@ const params = {
   accessKeyId: AWS_ACCESS_KEY_ID,
   secretAccessKey: AWS_SECRET_ACCESS_KEY,
 };
+
+const S3Exception = require("../exceptions/S3Exception");
 
 const s3Client = new S3Client(params);
 
@@ -60,8 +62,19 @@ class PollyService {
         Body: audio,
       };
 
+      // Uploads the audio to S3
+      try{  
       const s3Command = new PutObjectCommand(s3Params);
       await s3Client.send(s3Command);
+      }catch (error) {
+        if (error.Code) {
+            const errorCode = error.Code;
+            throw S3Exception.handleS3Exception(errorCode);
+        } else {
+            console.error("Erro inesperado:", error);
+        }
+      }
+      
 
       // Get the URL of the audio file in S3
       const urlParams = {
