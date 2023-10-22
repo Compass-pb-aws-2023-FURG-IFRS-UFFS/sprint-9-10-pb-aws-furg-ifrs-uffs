@@ -1,10 +1,11 @@
+const LexException = require("../exceptions/aws-exceptions/LexException");
+const { BOT_ID, BOT_ALIAS_ID, LOCALE_ID } = require("../core/config");
+const TranscribeService = require("./TranscribeService");
+const PollyService = require("./PollyService");
 const {
   LexRuntimeV2Client,
   RecognizeTextCommand,
 } = require("@aws-sdk/client-lex-runtime-v2");
-const { BOT_ID, BOT_ALIAS_ID, LOCALE_ID } = require("../core/config");
-const PollyService = require("./PollyService");
-const TranscribeService = require("./TranscribeService");
 
 class LexService {
   constructor() {
@@ -44,8 +45,13 @@ class LexService {
       }
       return response;
     } catch (error) {
-      console.error("Error to send a message to Amazon Lex V2:", error);
-      throw new Error("Error in amazon lex");
+        if (error.Code) {
+          const errorCode = error.Code;
+          throw LexException.handleLexException(errorCode);
+        } else {
+          console.error("Erro inesperado:", error);
+          return "Erro inesperado";
+        }
     }
   }
 }

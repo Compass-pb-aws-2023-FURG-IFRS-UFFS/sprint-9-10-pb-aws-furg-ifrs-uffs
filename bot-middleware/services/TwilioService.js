@@ -1,4 +1,5 @@
 const { TWILIO_DEFAULT_NUMBER, AUTH_TOKEN, ACCOUNT_SID } = require("../core/config");
+const TwilioException = require("../exceptions/twilio-exceptions/TwilioException");
 const client = require('twilio')
 
 class TwilioService {
@@ -21,8 +22,13 @@ class TwilioService {
     try {
       await this.twilioClient.messages.create(params);
     } catch (error) {
-      console.log("Ocurred an error");
-      throw new Error("Error in twilio");
+      if (error.Code) {
+        const errorCode = error.Code;
+        throw TwilioException.handleTwilioException(errorCode);
+      } else {
+        console.error("Erro inesperado:", error);
+        return "Erro inesperado";
+      }
     }
   }
   
@@ -45,8 +51,13 @@ class TwilioService {
     try {
       await this.twilioClient.messages.create(params);   
     } catch (error) {
-      console.log("Ocurred an error");
-      throw new Error("Error in twilio");
+      if (error.Code) {
+        const errorCode = error.Code;
+        throw TwilioException.handleTwilioException(errorCode);
+      } else {
+        console.error("Erro inesperado:", error);
+        return "Erro inesperado";
+      }
     }
   }
 }

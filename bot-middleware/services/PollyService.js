@@ -1,6 +1,8 @@
-const createHash = require("../helper/helper").createHash;
 const {PollyClient,SynthesizeSpeechCommand} = require("@aws-sdk/client-polly");
+const S3Exception = require("../exceptions/aws-exceptions/S3Exception");
+const PollyException = require("../exceptions/aws-exceptions/PollyException");
 const {S3Client,PutObjectCommand, S3} = require("@aws-sdk/client-s3");
+const createHash = require("../helper/helper").createHash;
 const {REGION,
   AWS_ACCESS_KEY_ID,
   AWS_SECRET_ACCESS_KEY,
@@ -13,7 +15,6 @@ const params = {
   secretAccessKey: AWS_SECRET_ACCESS_KEY,
 };
 
-const S3Exception = require("../exceptions/S3Exception");
 
 const s3Client = new S3Client(params);
 
@@ -74,7 +75,6 @@ class PollyService {
             console.error("Erro inesperado:", error);
         }
       }
-      
 
       // Get the URL of the audio file in S3
       const urlParams = {
@@ -88,9 +88,14 @@ class PollyService {
 
       return url;
 
-    } catch (err) {
-      console.log(err);
-      return null;
+    } catch (error) {
+        if (error.Code) {
+          const errorCode = error.Code;
+          throw PollyException.handlePollyException(errorCode);
+        } else {
+          console.error("Erro inesperado:", error);
+          return "Erro inesperado";
+        }
     }
   }
 }
