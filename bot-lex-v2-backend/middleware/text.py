@@ -3,7 +3,28 @@ import json
 import os
 import gzip
 import base64
-from middleware.requests import send_message_telegram
+from middleware.requests import *
+import requests
+from core.config import settings
+def handle_html_input(chat_id, input):
+    file_details = get_file_details_telegram(input['file_id'])
+    file = get_file_telegram(file_details['file_path'])
+    print(file)
+    file_html = base64.b64encode(file).decode('utf-8')
+    api_url=f'{settings.CC_API_BASE_URL}/dev/schedule/'
+    headers = {
+        'Content-Type': 'text/html; charset=utf-8',
+    }
+    response = requests.post(api_url, headers=headers, data=file.decode('iso-8859-1').encode('utf-8'))
+    if response.status_code == 200:
+        response_data = json.loads(response.text)
+        print(response_data)
+        send_message_telegram(chat_id, 'Foi!')
+    else:
+        response_data = json.loads(response.text)
+        print(response_data)
+        send_message_telegram(chat_id, response_data['Error'])
+
 
 def resolve_user_text(chat_id, user_text):
     bot_id, bot_alias_id, locale_id = os.environ["LEX_BOT_ID"],os.environ["LEX_ALIAS_ID"],'pt_BR'

@@ -15,3 +15,18 @@ def send_request_telegram(telegram_method, data):
     )
     response = urllib.request.urlopen(request)
     return response
+
+def get_file_details_telegram(file_id):
+    raw_res = send_request_telegram("getFile", {"file_id": file_id})
+    text_res = raw_res.read().decode('utf-8')
+    json_res = json.loads(text_res)
+    return json_res["result"]
+
+def get_file_telegram(file_path):
+    telegramURL = f"https://api.telegram.org/file/bot{os.environ['TELEGRAM_TOKEN']}/{file_path}"
+    print(telegramURL)
+    req = urllib.request.Request(telegramURL, method="GET")
+    raw_res = urllib.request.urlopen(req)
+    print(raw_res.__dict__)
+    bin_file = raw_res.read()
+    return bin_file

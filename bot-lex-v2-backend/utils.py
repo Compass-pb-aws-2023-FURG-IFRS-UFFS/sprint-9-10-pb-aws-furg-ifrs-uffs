@@ -1,10 +1,6 @@
 from datetime import datetime
 import pytz
-import boto3
-import hashlib
 import json
-import random
-import string
 
 def create_response(event, msgText):
   response = {

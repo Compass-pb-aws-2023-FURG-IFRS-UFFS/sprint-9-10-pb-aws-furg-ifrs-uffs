@@ -13,6 +13,7 @@ provider:
     LEX_BOT_ID: ${env:BOT_ID}
     LEX_ALIAS_ID: ${env:BOT_ALIAS_ID}
     TELEGRAM_TOKEN: ${env:TELEGRAM_TOKEN}
+    CC_API_BASE_URL: ${env:CC_API_BASE_URL}
   iam:
     role:
       name: role-for-middleware-lambda-lex-bot

@@ -5,10 +5,24 @@ useDotenv: true
 
 provider:
   name: aws
-  runtime: python3.11
+  runtime: python3.9
   region: us-east-1
+  
   environment: 
     MSG: ${env:MSG}
+    DYNAMO_DB_USERS_TABLE: ${ssm:uffs-bot-users-table-name}
+  iam:
+    role:
+      name: iam-for-lambda-CC-bot-api
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+          Resource:
+            - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.DYNAMO_DB_USERS_TABLE}
+    
 
 functions:
   health:
@@ -24,7 +38,13 @@ functions:
           path: /news
           method: get
 
-          
+  updateSchedule:
+    handler: routes/schedule_route.handler
+    events:
+      - http: 
+          path: /schedule
+          method: post
+          cors: true
 plugins:
   - serverless-offline
   - serverless-python-requirements

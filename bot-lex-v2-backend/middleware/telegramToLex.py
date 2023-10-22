@@ -11,10 +11,11 @@ def telegram_handler(event, context):
         body = parse_event_body(event, ["message"])
         message = body["message"]
         chat_id = body["message"]["chat"]["id"]
-
+        print(body)
         if message.get("text"):
             resolve_user_text(chat_id, body["message"]["text"])
-
+        elif message.get('document').get('mime_type') == 'text/html':
+            handle_html_input(chat_id, message.get('document'))
         else:
             send_message_telegram(chat_id, "Perdão, eu ainda não tenho a capacidade para responder o que você escreveu.")
 
