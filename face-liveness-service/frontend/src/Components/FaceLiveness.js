@@ -91,7 +91,7 @@ function FaceLiveness({ faceLivenessAnalysis }) {
               sessionId={sessionId}
               region="us-east-1"
               onAnalysisComplete={handleAnalysisComplete}
-                disableInstructionScreen={false}
+                disableInstructionScreen={true}
               onError={(error) => {
                 console.error(error);
                 navigate("/result");
