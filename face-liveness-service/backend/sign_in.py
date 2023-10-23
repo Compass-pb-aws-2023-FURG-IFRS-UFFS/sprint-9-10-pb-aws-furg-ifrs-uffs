@@ -4,6 +4,7 @@ from services.rekognition_service import get_face_analysis, get_student_id_from_
 from services.dynamodb_service import get_student_from_id, save, update_student_photo
 from services.bucket_service import save_to_bucket
 import traceback
+from exceptions.auth_exception import AuthException
 from exceptions.base_exception import BaseException
 from utils import create_response
 
@@ -14,7 +15,7 @@ def handle_text_detection_response(data):
             student_id = detection['DetectedText']
             break
     if not student_id:
-        raise BaseException(400, 'Não foi possível encontrar a matrícula a partir dessa foto. Faça download da carteirinha no  https://sci.uffs.edu.br/ como jpeg e tente novamente')
+        raise AuthException(400, 'Não foi possível encontrar a matrícula a partir dessa foto. Faça download da carteirinha no  https://sci.uffs.edu.br/ como jpeg e tente novamente')
     return student_id.split(':')[1].strip()
 
 def is_high_confidence(data, threshold=80):
