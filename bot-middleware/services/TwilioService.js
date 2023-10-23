@@ -1,7 +1,7 @@
 const { TWILIO_DEFAULT_NUMBER, AUTH_TOKEN, ACCOUNT_SID } = require("../core/config");
 const TwilioException = require("../exceptions/twilio-exceptions/TwilioException");
 const client = require('twilio')
-
+const axios = require("axios")
 class TwilioService {
   constructor() {
     this.twilioClient = client(ACCOUNT_SID, AUTH_TOKEN);
@@ -60,6 +60,27 @@ class TwilioService {
       }
     }
   }
+  
+  //Yuri
+  async handleDownload(imageUrl) {
+      try {
+        const response = await axios.get(imageUrl, {
+          responseType: 'arraybuffer',
+          auth: {
+            username: ACCOUNT_SID,
+            password: AUTH_TOKEN,
+          },
+        });
+    
+        const imageData = Buffer.from(response.data, 'binary').toString('base64');
+        return Buffer.from(imageData, 'base64');
+      } catch (error) {
+        console.error('Erro na solicitação:', error);
+        throw error; 
+      }
+  }
 }
+
+
 
 module.exports = TwilioService;
