@@ -54,7 +54,9 @@ functions:
           path: /token
           method: post
           cors: true
-
+  signIn:
+    handler: sign_in.sign_in_handler
+   
       
 
 plugins:

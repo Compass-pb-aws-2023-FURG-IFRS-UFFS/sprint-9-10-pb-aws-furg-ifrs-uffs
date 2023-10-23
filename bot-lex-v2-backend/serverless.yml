@@ -14,6 +14,7 @@ provider:
     LEX_ALIAS_ID: ${env:BOT_ALIAS_ID}
     TELEGRAM_TOKEN: ${env:TELEGRAM_TOKEN}
     CC_API_BASE_URL: ${env:CC_API_BASE_URL}
+    SIGN_IN_LAMBDA: ${env:SIGN_IN_LAMBDA}
   iam:
     role:
       name: role-for-middleware-lambda-lex-bot

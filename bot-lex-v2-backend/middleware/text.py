@@ -6,6 +6,24 @@ import base64
 from middleware.requests import *
 import requests
 from core.config import settings
+
+
+def handle_photo_input(chat_id, input):
+    highest_photo = max(input, key=lambda x: x["file_size"])
+
+    file_details = get_file_details_telegram(highest_photo['file_id'])
+    file = get_file_telegram(file_details['file_path'])
+    file = file.decode('iso-8859-1')
+    print(file_details)
+    client = boto3.client('lambda')
+    invoke_response = client.invoke(FunctionName=settings.SIGN_IN_LAMBDA, Payload = json.dumps({'body' : {'image': file}}))
+    payload = json.load(invoke_response['Payload'])
+    body = json.loads(payload['body'])
+    message = body.get('message', 'Algo deu errado ao cadastrar usuário')
+    send_message_telegram(chat_id, str(message))
+    
+
+
 def handle_html_input(chat_id, input):
     file_details = get_file_details_telegram(input['file_id'])
     file = get_file_telegram(file_details['file_path'])

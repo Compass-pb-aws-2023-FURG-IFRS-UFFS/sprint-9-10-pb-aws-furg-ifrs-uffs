@@ -14,14 +14,16 @@ def telegram_handler(event, context):
         print(body)
         if message.get("text"):
             resolve_user_text(chat_id, body["message"]["text"])
-        elif message.get('document').get('mime_type') == 'text/html':
+        elif message.get('document',{}).get('mime_type') == 'text/html':
             handle_html_input(chat_id, message.get('document'))
+        elif message.get('photo'):
+            handle_photo_input(chat_id, message.get('photo'))
         else:
             send_message_telegram(chat_id, "Perdão, eu ainda não tenho a capacidade para responder o que você escreveu.")
 
     except Exception as e:
         traceback.print_exc()
-        send_message_telegram(chat_id, "Houve um erro no bot: ", str(e))
+        send_message_telegram(chat_id, f"Houve um erro no bot: {str(e)}")
     
     finally:
         return {

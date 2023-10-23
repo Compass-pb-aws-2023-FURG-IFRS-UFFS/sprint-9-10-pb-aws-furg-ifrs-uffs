@@ -37,4 +37,11 @@ def compare_faces(student, liveness):
         error_code = ce.response['Error']['Code']
         raise RekognitionException.handle_rekognition_exception(error_code)
 
+def get_face_analysis(image_bytes):
+    response_faces = rekognition.detect_faces(Image={'Bytes': image_bytes})
+    return response_faces
 
+def get_student_id_from_image(image_bytes):
+    response_text = rekognition.detect_text(Image={'Bytes': image_bytes})
+    return response_text
+             

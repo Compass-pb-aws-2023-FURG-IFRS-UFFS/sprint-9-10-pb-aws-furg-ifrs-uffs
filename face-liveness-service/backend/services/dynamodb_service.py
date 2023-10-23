@@ -37,3 +37,26 @@ def update_student(student, table = database_table):
     )
 
     return unique_id
+
+def update_student_photo(student, key, table = database_table):
+
+    update_expression = "SET #image_key = :key"
+    expression_attribute_values = {
+        ':key': key,
+    }
+
+    expression_attribute_names = {
+        '#image_key': 'image_key'
+    }
+
+    # Update item in DynamoDB
+    table.update_item(
+        Key={'id': student['id']},
+        UpdateExpression=update_expression,
+        ExpressionAttributeValues=expression_attribute_values,
+        ExpressionAttributeNames=expression_attribute_names,
+    )
+
+
+def save(item, table = database_table):
+    table.put_item(Item = item)
