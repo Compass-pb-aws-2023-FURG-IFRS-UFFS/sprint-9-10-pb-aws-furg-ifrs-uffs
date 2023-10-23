@@ -45,6 +45,14 @@ functions:
           path: /schedule
           method: post
           cors: true
+  
+  document:
+    handler: routes/documents_route.documents_route
+    events:
+      - http: 
+          path: /documents
+          method: get
+          cors: true
 plugins:
   - serverless-offline
   - serverless-python-requirements
