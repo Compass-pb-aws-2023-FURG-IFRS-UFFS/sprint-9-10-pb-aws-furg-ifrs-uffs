@@ -22,12 +22,11 @@ class LexService {
     };
 
     const command = new RecognizeTextCommand(params);
-
     try {
       const returnLex = await this.lexClient.send(command);
       let response = "";
       console.log("Response from Amazon Lex V2:", returnLex);
-      const intentName = returnLex.interpretations[0].intent.name; 
+      const intentName = returnLex.interpretations[0].intent.name;
       if (intentName == "Text-to-Speech") {
         const sessionState = returnLex.sessionState.dialogAction.type;
         if (sessionState == "ElicitSlot") {
@@ -36,22 +35,29 @@ class LexService {
           const pollyService = new PollyService();
           response = await pollyService.textToSpeech(message);
         }
-      } else if (intentName == "Speech-to-Text") {        
+      } else if (intentName == "Speech-to-Text") {
         const transcribeService = new TranscribeService();
         response = await transcribeService.transcribeMessage(message);
         console.log("Transcribe response:", response);
-      }else{
-        response = returnLex.messages[0].content;
+      } else {
+        let msg =
+          "Escolha um serviço:\n\n" +
+          "1️⃣ Texto para Áudio \n" +
+          "2️⃣ Áudio para Texto \n" +
+          "3️⃣ Imagem para Texto\n" +
+          "4️⃣ Imagem para Áudio";
+        response = returnLex.messages[0].content + "\n\n" + msg;
       }
+
       return response;
     } catch (error) {
-        if (error.Code) {
-          const errorCode = error.Code;
-          throw LexException.handleLexException(errorCode);
-        } else {
-          console.error("Erro inesperado:", error);
-          return "Erro inesperado";
-        }
+      if (error.Code) {
+        const errorCode = error.Code;
+        throw LexException.handleLexException(errorCode);
+      } else {
+        console.error("Erro inesperado:", error);
+        return "Erro inesperado";
+      }
     }
   }
 }
