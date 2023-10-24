@@ -1,6 +1,5 @@
 const crypto = require("crypto");
 
-
 /**
  * Creates a SHA256 hash of a string. Used to verify passwords before they are sent to the server
  *

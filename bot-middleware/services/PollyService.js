@@ -1,9 +1,13 @@
-const {PollyClient,SynthesizeSpeechCommand} = require("@aws-sdk/client-polly");
+const {
+  PollyClient,
+  SynthesizeSpeechCommand,
+} = require("@aws-sdk/client-polly");
 const S3Exception = require("../exceptions/aws-exceptions/S3Exception");
 const PollyException = require("../exceptions/aws-exceptions/PollyException");
-const {S3Client,PutObjectCommand, S3} = require("@aws-sdk/client-s3");
+const { S3Client, PutObjectCommand, S3 } = require("@aws-sdk/client-s3");
 const createHash = require("../helper/helper").createHash;
-const {REGION,
+const {
+  REGION,
   AWS_ACCESS_KEY_ID,
   AWS_SECRET_ACCESS_KEY,
   BUCKET_NAME,
@@ -14,7 +18,6 @@ const params = {
   accessKeyId: AWS_ACCESS_KEY_ID,
   secretAccessKey: AWS_SECRET_ACCESS_KEY,
 };
-
 
 const s3Client = new S3Client(params);
 
@@ -56,23 +59,20 @@ class PollyService {
 
       const s3Params = {
         Bucket: BUCKET_NAME,
-        Key:
-          "audio_" +
-          createHash(text) +
-          ".ogg",
+        Key: "audio_" + createHash(text) + ".ogg",
         Body: audio,
       };
 
       // Uploads the audio to S3
-      try{  
-      const s3Command = new PutObjectCommand(s3Params);
-      await s3Client.send(s3Command);
-      }catch (error) {
+      try {
+        const s3Command = new PutObjectCommand(s3Params);
+        await s3Client.send(s3Command);
+      } catch (error) {
         if (error.Code) {
-            const errorCode = error.Code;
-            throw S3Exception.handleS3Exception(errorCode);
+          const errorCode = error.Code;
+          throw S3Exception.handleS3Exception(errorCode);
         } else {
-            console.error("Erro inesperado:", error);
+          console.error("Erro inesperado:", error);
         }
       }
 
@@ -84,21 +84,20 @@ class PollyService {
       };
 
       // Returns URL to S3 bucket with parameters set in params.
-      const url = "https://" + BUCKET_NAME + ".s3.amazonaws.com/" + s3Params.Key;
+      const url =
+        "https://" + BUCKET_NAME + ".s3.amazonaws.com/" + s3Params.Key;
 
       return url;
-
     } catch (error) {
-        if (error.Code) {
-          const errorCode = error.Code;
-          throw PollyException.handlePollyException(errorCode);
-        } else {
-          console.error("Erro inesperado:", error);
-          return "Erro inesperado";
-        }
+      if (error.Code) {
+        const errorCode = error.Code;
+        throw PollyException.handlePollyException(errorCode);
+      } else {
+        console.error("Erro inesperado:", error);
+        return "Erro inesperado";
+      }
     }
   }
 }
-
 
 module.exports = PollyService;
