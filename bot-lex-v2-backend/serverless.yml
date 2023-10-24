@@ -11,15 +11,26 @@ provider:
     SNS_TOPIC_ARN: ${ssm:uffs-bot-developers-topic-arn}
     ContactUsIntent: ${env:ContactUsIntent}
     GetContactIntent: ${env:GetContactIntent}
+    ScheduleIntent: ${env:ScheduleIntent}
     LEX_BOT_ID: ${env:BOT_ID}
     LEX_ALIAS_ID: ${env:BOT_ALIAS_ID}
     TELEGRAM_TOKEN: ${env:TELEGRAM_TOKEN}
     CC_API_BASE_URL: ${env:CC_API_BASE_URL}
     SIGN_IN_LAMBDA: ${env:SIGN_IN_LAMBDA}
+    AUTH_API_URL: ${env:AUTH_API_URL}
+    DYNAMO_DB_USERS_TABLE: ${ssm:uffs-bot-users-table-name}
+
   iam:
     role:
       name: role-for-middleware-lambda-lex-bot
       statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+          Resource:
+            - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.DYNAMO_DB_USERS_TABLE}
         - Effect: Allow
           Action: lambda:InvokeFunction
           Resource: "*"
@@ -44,6 +55,9 @@ functions:
 
   getContactIntent:
     handler: handlers/get_contact.handle_get_contact_intent
+  
+  getScheduleIntent:
+    handler: handlers/get_schedule.handle_get_schedule_intent
     
   telegramToLex:
     handler: middleware/telegramToLex.telegram_handler
