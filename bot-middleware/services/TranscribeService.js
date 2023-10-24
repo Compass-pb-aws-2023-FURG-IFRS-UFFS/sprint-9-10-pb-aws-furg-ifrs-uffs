@@ -1,14 +1,6 @@
 const { TranscribeClient, StartTranscriptionJobCommand } = require("@aws-sdk/client-transcribe");
-const { LOCALE_ID, REGION, TRANSCRIBE_NAME, BUCKET_NAME, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY } = require("../core/config");
-const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
-
-const params = {
-    region: REGION,
-    accessKeyId: AWS_ACCESS_KEY_ID,
-    secretAccessKey: AWS_SECRET_ACCESS_KEY,
-}
-
-const s3Client = new S3Client(params);
+const { REGION, BUCKET_NAME } = require("../core/config");
+const createHash = require("../helper/helper").createHash;
 
 class TranscribeService {
     constructor() {
@@ -17,10 +9,10 @@ class TranscribeService {
 
     async transcribeMessage(audioFile) {
       const transcribeParams = {
-        TranscriptionJobName: TRANSCRIBE_NAME,
-        LanguageCode: LOCALE_ID,
+        TranscriptionJobName: createHash(audioFile),
+        LanguageCode: "pt-BR",
         // MediaFormat: "mp3" || "mp4" || "wav" || "flac" || "ogg" || "amr" || "webm" || "m4a",
-        MediaFormat: "mp3",
+        MediaFormat: "ogg",
         Media: {
           MediaFileUri: audioFile
         },
