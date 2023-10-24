@@ -10,6 +10,7 @@ provider:
   environment:
     SNS_TOPIC_ARN: ${ssm:uffs-bot-developers-topic-arn}
     ContactUsIntent: ${env:ContactUsIntent}
+    GetContactIntent: ${env:GetContactIntent}
     LEX_BOT_ID: ${env:BOT_ID}
     LEX_ALIAS_ID: ${env:BOT_ALIAS_ID}
     TELEGRAM_TOKEN: ${env:TELEGRAM_TOKEN}
@@ -32,7 +33,7 @@ provider:
           Action:
             - lex:RecognizeText
             - lex:StartConversation
-          Resource: "arn:aws:lex:us-east-1:433097106475:bot/UffsBot/alias/TelegramAlias/*"
+          Resource: ${env:TELEGRAM_ARN}
 
 functions:
   contactUsIntent:
@@ -41,6 +42,9 @@ functions:
   router:
     handler: router.handle_router
 
+  getContactIntent:
+    handler: handlers/get_contact.handle_get_contact_intent
+    
   telegramToLex:
     handler: middleware/telegramToLex.telegram_handler
     events:
