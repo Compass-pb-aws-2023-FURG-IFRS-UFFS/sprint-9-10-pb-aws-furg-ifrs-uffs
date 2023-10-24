@@ -29,7 +29,7 @@ function FaceLiveness({ faceLivenessAnalysis }) {
         // Close the modal after fetching data
         setIsModalOpen(false);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Erro interno:", error);
         setLoading(false);
       }
     };
@@ -52,7 +52,7 @@ function FaceLiveness({ faceLivenessAnalysis }) {
 
       navigate("/result", { state: { data: data } });
     } catch (error) {
-      console.error("Error fetching analysis results:", error);
+      console.error("Error na análise de resultados:", error);
     }
   };
 
@@ -92,7 +92,7 @@ function FaceLiveness({ faceLivenessAnalysis }) {
               region="us-east-1"
               onAnalysisComplete={handleAnalysisComplete}
                 disableInstructionScreen={true}
-              onError={(error) => {
+                onError={(error) => {
                 console.error(error);
                 navigate("/result");
 

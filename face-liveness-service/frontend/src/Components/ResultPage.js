@@ -20,7 +20,7 @@ const ResultPage = () => {
     return (
       <div>
         <h2>Resultado da análise</h2>
-        <p>Tivemos alguns problemas.</p>
+        <p>Tivemos alguns problemas no servidor.</p>
         <Link to="/">Tente novamente</Link>
       </div>
     );
@@ -35,7 +35,7 @@ const ResultPage = () => {
         <div>
           <p>Status: Sucesso!</p>
           <div className="token-container">
-            <p>Token de acesso (utilize esse token no bot):</p>
+            <p>Token de acesso (informe esse token no bot):</p>
             <input
               type="text"
               id="token-field"
