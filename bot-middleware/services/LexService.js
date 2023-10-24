@@ -20,15 +20,16 @@ class LexService {
       sessionId: sessionId,
       text: message,
     };
-
     const command = new RecognizeTextCommand(params);
     try {
       const returnLex = await this.lexClient.send(command);
       let response = "";
       console.log("Response from Amazon Lex V2:", returnLex);
-      const intentName = returnLex.interpretations[0].intent.name;
+      const intentName = returnLex.sessionState.intent.name;
+      console.log(intentName);
       if (intentName == "Text-to-Speech") {
         const sessionState = returnLex.sessionState.dialogAction.type;
+        console.log(sessionState);
         if (sessionState == "ElicitSlot") {
           response = returnLex.messages[0].content;
         } else {
@@ -40,15 +41,13 @@ class LexService {
         response = await transcribeService.transcribeMessage(message);
         console.log("Transcribe response:", response);
       } else {
-        let msg =
-          "Escolha um serviço:\n\n" +
-          "1️⃣ Texto para Áudio \n" +
-          "2️⃣ Áudio para Texto \n" +
-          "3️⃣ Imagem para Texto\n" +
-          "4️⃣ Imagem para Áudio";
-        response = returnLex.messages[0].content + "\n\n" + msg;
+        response = "Escolha um serviço:\n\n" +
+                   "1️⃣ Texto para Áudio   \n" +
+                   "2️⃣ Áudio para Texto   \n" +
+                   "3️⃣ Imagem para Texto   \n" +
+                   "4️⃣ Imagem para Áudio";
+        return returnLex.messages[0].content + "\n\n"  + response;
       }
-
       return response;
     } catch (error) {
       if (error.Code) {
@@ -59,6 +58,7 @@ class LexService {
         return "Erro inesperado";
       }
     }
+    // return returnLex
   }
 }
 
