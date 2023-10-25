@@ -19,7 +19,7 @@ def create_image_object(key, bucket = settings.BUCKET_NAME):
 
 def compare_faces(student, liveness):
     student_image = student.get('image_key', 'nulo')
-    student_image = create_image_object(f'users/{student_image}')
+    student_image = create_image_object(f'{student_image}')
     try:
         response = rekognition.compare_faces(
             SourceImage=student_image,
@@ -37,11 +37,17 @@ def compare_faces(student, liveness):
         error_code = ce.response['Error']['Code']
         raise RekognitionException.handle_rekognition_exception(error_code)
 
-def get_face_analysis(image_bytes):
-    response_faces = rekognition.detect_faces(Image={'Bytes': image_bytes})
+def get_face_analysis(key):
+    s3_object = create_s3_object(key)
+    print(s3_object)
+    response_faces = rekognition.detect_faces(Image=s3_object)
     return response_faces
 
-def get_student_id_from_image(image_bytes):
-    response_text = rekognition.detect_text(Image={'Bytes': image_bytes})
+def get_student_id_from_image(key):
+    s3_object = create_s3_object(key)
+    response_text = rekognition.detect_text(Image=s3_object)
     return response_text
+
+def create_s3_object(key, bucket = settings.BUCKET_NAME):
+    return {"S3Object": {"Bucket": bucket, "Name": key}}
              

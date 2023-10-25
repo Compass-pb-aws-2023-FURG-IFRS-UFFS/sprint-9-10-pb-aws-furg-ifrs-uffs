@@ -6,6 +6,12 @@ import base64
 from middleware.requests import *
 import requests
 from core.config import settings
+from datetime import datetime
+def save_to_bucket(image,bucket=os.environ.get('BUCKET_NAME')):
+    s3 = boto3.client('s3')
+    object_key = f'users/{datetime.now().strftime("%d-%m-%y %H:%M:%S")}.jpeg'
+    s3.put_object(Bucket = bucket, Key = object_key,Body=image)
+    return object_key
 
 
 def handle_photo_input(chat_id, input):
@@ -13,10 +19,11 @@ def handle_photo_input(chat_id, input):
 
     file_details = get_file_details_telegram(highest_photo['file_id'])
     file = get_file_telegram(file_details['file_path'])
-    file = file.decode('iso-8859-1')
+    key = save_to_bucket(file)
+    # file = file.decode('iso-8859-1')
     print(file_details)
     client = boto3.client('lambda')
-    invoke_response = client.invoke(FunctionName=settings.SIGN_IN_LAMBDA, Payload = json.dumps({'body' : {'image': file}}))
+    invoke_response = client.invoke(FunctionName=settings.SIGN_IN_LAMBDA, Payload = json.dumps({'body' : {'key': key}}))
     payload = json.load(invoke_response['Payload'])
     body = json.loads(payload['body'])
     message = body.get('message', 'Algo deu errado ao cadastrar usuário')

@@ -19,11 +19,19 @@ provider:
     SIGN_IN_LAMBDA: ${env:SIGN_IN_LAMBDA}
     AUTH_API_URL: ${env:AUTH_API_URL}
     DYNAMO_DB_USERS_TABLE: ${ssm:uffs-bot-users-table-name}
+    BUCKET_NAME: ${ssm:uffs-bot-auth-bucket-name}
+
 
   iam:
     role:
       name: role-for-middleware-lambda-lex-bot
       statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+          Resource:
+            - arn:aws:s3:::${self:provider.environment.BUCKET_NAME}/*
         - Effect: Allow
           Action:
             - dynamodb:PutItem

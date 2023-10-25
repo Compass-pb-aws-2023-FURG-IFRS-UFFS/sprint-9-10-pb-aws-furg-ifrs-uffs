@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 import pytz
+from unidecode import unidecode
 
 def create_response(statusCode, body=''):
     """
@@ -28,3 +29,6 @@ def get_formatted_datetime():
     """
     brazil_timezone = pytz.timezone('America/Sao_Paulo')
     return datetime.now(brazil_timezone).strftime("%d-%m-%y %H:%M:%S")
+
+def normalize_text(text):
+        return unidecode(text).lower()
