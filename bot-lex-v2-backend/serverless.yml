@@ -12,6 +12,7 @@ provider:
     ContactUsIntent: ${env:ContactUsIntent}
     GetContactIntent: ${env:GetContactIntent}
     ScheduleIntent: ${env:ScheduleIntent}
+    GetDocumentsIntent: ${env:GetDocumentsIntent}
     LEX_BOT_ID: ${env:BOT_ID}
     LEX_ALIAS_ID: ${env:BOT_ALIAS_ID}
     TELEGRAM_TOKEN: ${env:TELEGRAM_TOKEN}
@@ -57,6 +58,9 @@ provider:
 functions:
   contactUsIntent:
     handler: handlers/contact_us.handle_contact_us_intent
+  
+  getDocumentsIntent:
+    handler: handlers/get_documents.handle_get_documents_intent
 
   router:
     handler: router.handle_router
