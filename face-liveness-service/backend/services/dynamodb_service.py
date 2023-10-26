@@ -60,3 +60,7 @@ def update_student_photo(student, key, table = database_table):
 
 def save(item, table = database_table):
     table.put_item(Item = item)
+
+
+def select_all(table = database_table):
+    return table.scan()
