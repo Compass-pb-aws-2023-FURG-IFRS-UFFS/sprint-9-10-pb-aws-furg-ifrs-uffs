@@ -5,10 +5,10 @@ def news():
     """
     Retorna as notícias do site do curso de Ciência da Computação
 
-    :return: JSON
+    :return: Dicionário com as notícias
 
     Exemplo de uso:
-    noticias()
+    news()
     """
 
     url = "https://cc.uffs.edu.br/noticias/"
@@ -23,15 +23,13 @@ def news():
     for noticia in noticias:
         textos.append((noticia.find_all('div', class_='col-9 post-row-content')))
 
-    json = {
+    news_dict = {
         'last_update': '',
         'noticias': []
     }
 
     for i in range(len(textos[0])):
-        json['last_update'] = textos[0][0].time.text
-
-        json['noticias'].append({
+        news_dict['noticias'].append({
             'id': str(i),
             'titulo': textos[0][i].a.text,
             'tag': textos[0][i].span.text,
@@ -40,4 +38,4 @@ def news():
             'link': 'https://cc.uffs.edu.br' + textos[0][i].a['href'],
         })
 
-    return json
+    return news_dict
