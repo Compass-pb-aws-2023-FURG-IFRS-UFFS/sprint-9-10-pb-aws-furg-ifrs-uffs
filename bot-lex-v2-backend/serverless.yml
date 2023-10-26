@@ -22,6 +22,8 @@ provider:
     AUTH_API_URL: ${env:AUTH_API_URL}
     DYNAMO_DB_USERS_TABLE: ${ssm:uffs-bot-users-table-name}
     BUCKET_NAME: ${ssm:uffs-bot-auth-bucket-name}
+    FOLDER_NAME: ${env:FOLDER_NAME}
+    NEWS_TABLE_NAME: ${env:NEWS_TABLE_NAME}
     
   iam:
     role:

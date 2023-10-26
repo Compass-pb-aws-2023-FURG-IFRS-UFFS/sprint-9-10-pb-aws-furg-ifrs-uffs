@@ -7,6 +7,7 @@ import pytz
 import json
 import os
 
+
 def create_response(event, msgText):
   response = {
           "sessionState": {
@@ -92,6 +93,9 @@ def get_name(message):
     return response_message
 
 
+# NEWS SECTION
+
+
 def get_news():
     """
     Retorna as notícias do site do curso de Ciência da Computação
@@ -140,60 +144,92 @@ def get_news():
     return string
 
 
-def get_news_url(news_text:str, news_id:int) -> str:
-  """
-  Recebe o texto da notícia e retorna o link para o arquivo de áudio no bucket
+def get_full_news(url):
+    """
+    Recebe a url da notícia e retorna o texto completo
 
-  :param news_text: a notícia em formato de texto
-  :return: o link para o arquivo de áudio no bucket
+    :param url: a url da notícia
+    :return: o texto completo da notícia
 
-  Exemplo de uso:
-  read_news("A Universidade Federal da Fronteira Sul (UFFS) está com inscrições abertas.")
-  """
+    Exemplo de uso:
+    get_full_news("https://cc.uffs.edu.br/noticias/curso-de-ciencia-da-computacao-abre-vagas-para-bolsistas/")
+    """
+    response = requests.get(url)
+    
+    soup = BeautifulSoup(response.content, 'html.parser')
+    
+    content = soup.find_all('div', class_='post-content mt-5')[0]
+        
+    news_dict = {'text': ''}
+    
+    for p in content:
+        news_dict['text'] += p.text.strip().replace('\n', ' ')
+        
+    return news_dict
 
-  # Set up the S3 client
-  s3 = boto3.client('s3')
 
-  # Set up the Polly client
-  polly = boto3.client('polly')
+def get_news_url(news_text: str, news_id: int) -> str:
+    """
+    Recebe o texto da notícia e retorna o link para o arquivo de áudio no bucket
 
-  # Set up the S3 bucket name and key
-  folder_name = 'news/'
-  bucket_name = os.environ['BUCKET_NAME']
-  key = folder_name + f'{news_id}.mp3'
+    :param news_text: a notícia em formato de texto
+    :param news_id: identificador único da notícia
+    :return: o link para o arquivo de áudio no bucket
 
-  try:
-    # Convert the news text to speech using Polly
-    response = polly.synthesize_speech(
-        Text=news_text,
-        Engine='neural',
-        OutputFormat='mp3',
-        LanguageCode='pt-BR',
-        VoiceId='Camila', # Vitoria | Thiago
-        TextType='text',
-        SampleRate='24000'
-      )
+    Exemplo de uso:
+    get_news_url("A Universidade Federal da Fronteira Sul (UFFS) está com inscrições abertas.", 123)
+    """
 
-    # Save the audio file to the S3 bucket in the folder 'news'
-    s3.put_object(
-       Body=response['AudioStream'].read(), 
-       Bucket=bucket_name, 
-       Key=key
-      )
+    s3 = boto3.client('s3')
 
-    # Get the URL for the audio file in the S3 bucket
-    url = s3.generate_presigned_url(
-       'get_object', 
-       Params={
-          'Bucket': bucket_name, 
-          'Key': key
-          },
-        ExpiresIn=3600
+    polly = boto3.client('polly')
+
+    folder_name = os.environ['FOLDER_NAME'] + '/'
+    bucket_name = os.environ['BUCKET_NAME']
+    key = folder_name + f'{news_id}'
+
+    try:
+        # Convert the news text to speech using Polly
+        response = polly.start_speech_synthesis_task(
+            Text=news_text,
+            Engine='neural',
+            OutputS3BucketName=f'{bucket_name}',
+            OutputS3KeyPrefix=key,
+            LanguageCode='pt-BR',
+            OutputFormat='mp3',
+            VoiceId='Camila',  # Vitoria | Thiago
+            SampleRate='24000',
+            TextType='text'
         )
+        
+        url = f"https://{bucket_name}.s3.amazonaws.com/{key}.{response['SynthesisTask']['TaskId']}.mp3"
+        return url
 
-    return url
-
-  except (BotoCoreError, ClientError) as error:
-    print(error)
-    return None
+    except (BotoCoreError, ClientError) as error:
+        print(error)
+        return None
   
+
+def save_to_dynamo(noticias):
+    dynamodb = boto3.resource('dynamodb')
+
+    table_name = os.environ['NEWS_TABLE_NAME']
+    
+    table = dynamodb.Table(table_name)
+
+    for noticia in noticias['noticias']:
+        response = table.put_item(
+            Item={
+                'id': noticia['id'],
+                'titulo': noticia['titulo'],
+                'tag': noticia['tag'],
+                'data': noticia['data'],
+                'texto': noticia['texto'],
+                'link': noticia['link'],
+                'audio': noticia['audio']
+            }
+        )
+    
+    # Print the response
+    print(response)
+    return True
