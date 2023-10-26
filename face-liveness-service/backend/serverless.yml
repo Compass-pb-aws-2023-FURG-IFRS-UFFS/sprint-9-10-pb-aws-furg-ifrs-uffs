@@ -12,10 +12,15 @@ provider:
       name: iam-for-lambda-tts
       statements:
         - Effect: Allow
+          Action: s3:ListBucket
+          Resource:
+            - arn:aws:s3:::${self:provider.environment.BUCKET_NAME}
+        - Effect: Allow
           Action:
             - s3:GetObject
             - s3:PutObject
             - s3:DeleteObject
+            - s3:ListObject
           Resource:
             - arn:aws:s3:::${self:provider.environment.BUCKET_NAME}/*
         - Effect: Allow
@@ -28,6 +33,7 @@ provider:
             - dynamodb:PutItem
             - dynamodb:GetItem
             - dynamodb:UpdateItem
+            - dynamodb:Scan
           Resource:
             - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.DYNAMO_DB_USERS_TABLE}
       
@@ -57,6 +63,12 @@ functions:
           cors: true
   signIn:
     handler: sign_in.sign_in_handler
+
+  cleanUpBucket:
+    handler: s3_cleanup.handler
+    events: 
+      - schedule: rate(2 hours)
+
    
       
 
