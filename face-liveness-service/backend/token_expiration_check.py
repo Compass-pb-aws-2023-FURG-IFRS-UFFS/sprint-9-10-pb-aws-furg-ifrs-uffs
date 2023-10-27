@@ -3,6 +3,9 @@ from utils import create_response
 from datetime import datetime
 import json
 import traceback
+from config import settings
+
+expiration_in_minutes = int(settings.TOKEN_EXPIRATION_IN_MINUTES)
 def get_data_from_body(body):
     token = body.get('token', None)
     student_id = body.get('student_id', None)
@@ -13,7 +16,7 @@ def get_data_from_body(body):
     return token, student_id
 
 
-def check_expiration(student, expiration_in_minutes = 20):
+def check_expiration(student, expiration_in_minutes = expiration_in_minutes):
     timestamp_str = student['token_creation_timestamp']
     timestamp = datetime.strptime(timestamp_str, '%Y-%m-%dT%H:%M:%S.%f')
     current_time = datetime.utcnow()
