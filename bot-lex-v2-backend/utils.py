@@ -136,11 +136,11 @@ def formated_news() -> str:
     
     # Monta a string com as notícias
     for i in range(5):
-        string += news[i]['titulo'] + '\n'
-        string += 'Publicada em: ' + news[i]['data'] + '\n'
-        string += news[i]['texto'] + '\n'
-        string += 'Leia a notícia completa em: ' + news[i]['link'] + '\n'
-        string += 'Ouça a notícia completa em: ' + news[i]['audio'] + '\n\n'
+        string += f'{news[i]["titulo"]}... \n'
+        string += f'Publicada em {news[i]["data"]} \n'
+        string += f'{news[i]["texto"].split("  ler mais...")[0]} \n'
+        string += f'Leia a notícia completa em: {news[i]["link"]} \n'
+        string += f'Ouça a notícia completa em: {news[i]["audio"]} \n\n'
 
     return string
 
