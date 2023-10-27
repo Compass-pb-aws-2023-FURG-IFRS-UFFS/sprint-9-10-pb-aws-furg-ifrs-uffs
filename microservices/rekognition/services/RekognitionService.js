@@ -1,5 +1,5 @@
 const { Rekognition } = require("@aws-sdk/client-rekognition");
-const { BUCKET_NAME } = require("../core/config");
+const { BUCKET_NAME } = require("../../../bot-middleware/core/config");
 
 class RekognitionService {
   constructor() {

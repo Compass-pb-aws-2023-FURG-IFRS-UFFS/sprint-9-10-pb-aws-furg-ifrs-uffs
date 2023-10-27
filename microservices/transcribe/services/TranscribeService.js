@@ -2,8 +2,8 @@ const {
   TranscribeClient,
   StartTranscriptionJobCommand,
 } = require("@aws-sdk/client-transcribe");
-const { REGION, BUCKET_NAME } = require("../core/config");
-const createHash = require("../helper/helper").createHash;
+const { REGION, BUCKET_NAME } = require("../../../bot-middleware/core/config");
+const createHash = require("../../../bot-middleware/helper/helper").createHash;
 
 class TranscribeService {
   constructor() {

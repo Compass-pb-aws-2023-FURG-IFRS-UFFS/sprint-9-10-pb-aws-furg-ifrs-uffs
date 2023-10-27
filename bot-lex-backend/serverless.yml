@@ -1,0 +1,2 @@
+service: equitalk-lex-backend
+useDotenv: true

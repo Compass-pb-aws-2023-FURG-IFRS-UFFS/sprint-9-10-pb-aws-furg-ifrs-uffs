@@ -2,16 +2,16 @@ const {
   PollyClient,
   SynthesizeSpeechCommand,
 } = require("@aws-sdk/client-polly");
-const S3Exception = require("../exceptions/aws-exceptions/S3Exception");
-const PollyException = require("../exceptions/aws-exceptions/PollyException");
+const S3Exception = require("../../../bot-middleware/exceptions/aws-exceptions/S3Exception");
+const PollyException = require("../../../bot-middleware/exceptions/aws-exceptions/PollyException");
 const { S3Client, PutObjectCommand, S3 } = require("@aws-sdk/client-s3");
-const createHash = require("../helper/helper").createHash;
+const createHash = require("../../../bot-middleware/helper/helper").createHash;
 const {
   REGION,
   AWS_ACCESS_KEY_ID,
   AWS_SECRET_ACCESS_KEY,
   BUCKET_NAME,
-} = require("../core/config");
+} = require("../../../bot-middleware/core/config");
 
 const params = {
   region: REGION,

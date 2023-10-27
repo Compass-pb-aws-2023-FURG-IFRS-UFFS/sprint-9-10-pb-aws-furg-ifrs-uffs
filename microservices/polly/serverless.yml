@@ -1,0 +1,2 @@
+service: polly-microservice
+useDotenv: true

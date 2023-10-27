@@ -1,7 +1,7 @@
 const LexException = require("../exceptions/aws-exceptions/LexException");
 const { BOT_ID, BOT_ALIAS_ID, LOCALE_ID } = require("../core/config");
-const TranscribeService = require("./TranscribeService");
-const PollyService = require("./PollyService");
+const TranscribeService = require("../../microservices/transcribe/services/TranscribeService");
+const PollyService = require("../../microservices/polly/services/PollyService");
 const {
   LexRuntimeV2Client,
   RecognizeTextCommand,

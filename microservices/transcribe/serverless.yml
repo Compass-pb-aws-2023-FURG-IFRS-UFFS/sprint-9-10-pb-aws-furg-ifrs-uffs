@@ -1,0 +1,2 @@
+service: transcribe-microservice
+useDotenv: true
