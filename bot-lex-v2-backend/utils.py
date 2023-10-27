@@ -96,7 +96,7 @@ def get_name(message):
 # NEWS SECTION
 
 
-def get_news_from_dynamo():
+def get_news_from_dynamo() -> dict:
     """
     Retorna as notícias do site do curso de Ciência da Computação
 
@@ -106,21 +106,20 @@ def get_news_from_dynamo():
     get_news_from_dynamo()
     """
 
-    dynamodb = boto3.resource('dynamodb')
+    dynamodb = boto3.resource('dynamodb') # Instancia o recurso DynamoDB
 
-    table_name = os.environ['NEWS_TABLE_NAME']
+    table_name = os.environ['NEWS_TABLE_NAME'] # Nome da tabela
     
-    table = dynamodb.Table(table_name)
+    table = dynamodb.Table(table_name) # Instancia a tabela
 
-    response = table.scan()
+    response = table.scan() # Faz a consulta na tabela
 
-    # Sort the response by id
-    response['Items'].sort(key=lambda x: int(x['id']))
+    response['Items'].sort(key=lambda x: int(x['id'])) # Ordena as notícias pelo id
     
     return response['Items']
 
 
-def formated_news():
+def formated_news() -> str:
     """
     Formata as notícias para o formato de texto para serem enviadas ao usuário
 
@@ -131,10 +130,11 @@ def formated_news():
     format_news(news)
     """
 
-    news = get_news_from_dynamo()
+    news = get_news_from_dynamo() # Busca as notícias no DynamoDB
 
     string = ''
-
+    
+    # Monta a string com as notícias
     for i in range(5):
         string += news[i]['titulo'] + '\n'
         string += 'Publicada em: ' + news[i]['data'] + '\n'
@@ -145,25 +145,26 @@ def formated_news():
     return string
 
 
-def get_news():
+def get_news() -> dict:
     """
     Retorna as notícias do site do curso de Ciência da Computação
 
     :return: Dicionário com as notícias
 
     Exemplo de uso:
-    news()
+    get_news()
     """
 
     url = "https://cc.uffs.edu.br/noticias/"
     response = requests.get(url)
 
-    soup = BeautifulSoup(response.content, "html.parser")
+    soup = BeautifulSoup(response.content, "html.parser") # Instancia o BeautifulSoup
 
-    noticias = soup.find_all("div", class_="col-12 text-left")
+    noticias = soup.find_all("div", class_="col-12 text-left") # Busca as notícias
 
     textos = []
 
+    # Busca os textos das notícias
     for noticia in noticias:
         textos.append((noticia.find_all('div', class_='col-9 post-row-content')))
 
@@ -172,6 +173,7 @@ def get_news():
         'noticias': []
     }
 
+    # Monta o dicionário com as notícias
     for i in range(len(textos[0])):
         news_dict['noticias'].append({
             'id': str(i),
@@ -185,7 +187,7 @@ def get_news():
     return news_dict
 
 
-def get_full_news(url):
+def get_full_news(url: str) -> dict:
     """
     Recebe a url da notícia e retorna o texto completo
 
@@ -195,14 +197,16 @@ def get_full_news(url):
     Exemplo de uso:
     get_full_news("https://cc.uffs.edu.br/noticias/curso-de-ciencia-da-computacao-abre-vagas-para-bolsistas/")
     """
-    response = requests.get(url)
+
+    response = requests.get(url) # Faz a requisição da página
     
-    soup = BeautifulSoup(response.content, 'html.parser')
+    soup = BeautifulSoup(response.content, 'html.parser') # Instancia o BeautifulSoup
     
-    content = soup.find_all('div', class_='post-content mt-5')[0]
+    content = soup.find_all('div', class_='post-content mt-5')[0] # Busca o conteúdo da notícia
         
     news_dict = {'text': ''}
     
+    # Monta o dicionário com o texto completo da notícia
     for p in content:
         news_dict['text'] += p.text.strip().replace('\n', ' ')
         
@@ -221,16 +225,16 @@ def get_news_url(news_text: str, news_id: int) -> str:
     get_news_url("A Universidade Federal da Fronteira Sul (UFFS) está com inscrições abertas.", 123)
     """
 
-    s3 = boto3.client('s3')
+    s3 = boto3.client('s3') # Instancia o cliente S3
 
-    polly = boto3.client('polly')
+    polly = boto3.client('polly') # Instancia o cliente Polly
 
-    folder_name = os.environ['FOLDER_NAME'] + '/'
-    bucket_name = os.environ['BUCKET_NAME']
-    key = folder_name + f'{news_id}'
+    folder_name = os.environ['FOLDER_NAME'] + '/' # Nome da pasta no bucket
+    bucket_name = os.environ['BUCKET_NAME'] # Nome do bucket
+    key = folder_name + f'{news_id}' # Nome do arquivo no bucket
 
     try:
-        # Convert the news text to speech using Polly
+        # Converte o texto da notícia em áudio
         response = polly.start_speech_synthesis_task(
             Text=news_text,
             Engine='neural',
@@ -243,22 +247,35 @@ def get_news_url(news_text: str, news_id: int) -> str:
             TextType='text'
         )
         
+        # Monta a url do arquivo de áudio
         url = f"https://{bucket_name}.s3.amazonaws.com/{key}.{response['SynthesisTask']['TaskId']}.mp3"
         return url
 
+    # Caso ocorra algum erro, retorna None
     except (BotoCoreError, ClientError) as error:
-        print(error)
+        print(error) # Printa o erro no CloudWatch
         return None
   
 
-def save_to_dynamo(noticias):
-    try:
-        dynamodb = boto3.resource('dynamodb')
+def save_to_dynamo(noticias: dict) -> bool:
+    """
+    Salva as notícias no DynamoDB
 
-        table_name = os.environ['NEWS_TABLE_NAME']
+    :param noticias: as notícias
+    :return: True se as notícias foram salvas, False caso contrário
+
+    Exemplo de uso:
+    save_to_dynamo(noticias)
+    """
+
+    try:
+        dynamodb = boto3.resource('dynamodb') # Instancia o recurso DynamoDB
+
+        table_name = os.environ['NEWS_TABLE_NAME'] # Nome da tabela
         
-        table = dynamodb.Table(table_name)
+        table = dynamodb.Table(table_name) # Instancia a tabela
         
+        # Salva as notícias no DynamoDB
         for noticia in noticias['noticias']:
             response = table.put_item(
                 Item={
@@ -273,6 +290,8 @@ def save_to_dynamo(noticias):
             )
 
         return True
+    
+    # Caso ocorra algum erro, retorna False
     except Exception as e:
-        print(str(e))
+        print(str(e)) # Printa o erro no CloudWatch
         return False
