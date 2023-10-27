@@ -113,6 +113,9 @@ def get_news_from_dynamo():
     table = dynamodb.Table(table_name)
 
     response = table.scan()
+
+    # Sort the response by id
+    response['Items'].sort(key=lambda x: int(x['id']))
     
     # Print the response
     print(response)
