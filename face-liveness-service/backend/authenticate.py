@@ -2,20 +2,26 @@ from services.rekognition_service import get_liveness_session_results, compare_f
 from services.dynamodb_service import *
 from utils import create_response
 from exceptions.base_exception import BaseException
+from config import settings
 import traceback
 import json
 from exceptions.auth_exception import AuthException
+import requests
+
 def handler(event, context):
     try:
         body = json.loads(event['body'])
         session_id = body['session']
         student_id = body['student_id']
+        chat_id = body.get('chat_id')
+        print(chat_id)
         liveness_results = get_liveness_session_results(session_id)
         if float(liveness_results.get('Confidence')) < 50.0:
             raise AuthException(400, "Não podemos confirmar liveness da sua face. Tente novamente.")
         liveness_image = liveness_results['ReferenceImage'].get('Bytes')
         token = authenticate(student_id, liveness_image)
-        return create_response(200, {"status": "SUCCEEDED", "token": token })
+        update_session_state(chat_id, token, student_id)
+        return create_response(200, {"status": "SUCCEEDED"})
     except BaseException as be:
         return create_response(be.status_code, {"status": str(be)})
     except Exception as e:
@@ -36,3 +42,19 @@ def authenticate(student_id, liveness_image):
         raise AuthException(400, "Não podemos confirmar seu rosto é similar ao cadastrado. Tente novamente")
     unique_id = update_student(student)
     return unique_id
+
+
+def update_session_state(chat_id, token, student_id):
+    url = settings.BOT_BACKEND_API_URL +'lex'
+
+    data = {
+            "chat_id": chat_id,
+            "student_id": student_id,
+            "token":token
+    }
+
+    print(data)
+
+    response = requests.post(url, json=data)
+    print(response)
+    

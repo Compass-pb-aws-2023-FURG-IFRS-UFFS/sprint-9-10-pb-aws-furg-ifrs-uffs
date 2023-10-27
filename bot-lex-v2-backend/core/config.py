@@ -6,5 +6,6 @@ class Settings:
     SIGN_IN_LAMBDA = os.environ.get('SIGN_IN_LAMBDA')
     AUTH_API_URL = os.environ.get('AUTH_API_URL')
     DYNAMO_DB_USERS_TABLE= os.environ.get('DYNAMO_DB_USERS_TABLE')
-    
+    LEX_BOT_ID = os.environ.get('LEX_BOT_ID')
+    LEX_ALIAS_ID = os.environ.get('LEX_ALIAS_ID')
 settings = Settings()

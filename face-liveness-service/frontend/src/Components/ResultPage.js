@@ -4,10 +4,13 @@ import { useLocation, Link } from 'react-router-dom';
 const ResultPage = () => {
   const location = useLocation();
   const [isCopied, setIsCopied] = useState(false);
+  const queryParams = new URLSearchParams(location.search);
+  const chatId = queryParams.get('id');
 
   const handleCopyToken = () => {
     const tokenField = document.getElementById('token-field');
 
+    console.log(chatId)
     if (tokenField) {
       tokenField.select();
       document.execCommand('copy');
@@ -15,13 +18,13 @@ const ResultPage = () => {
     }
   };
 
-  if (!location || !location.state) {
+  if ( !location.state) {
     // Handle the case when location or location.state is undefined
     return (
       <div>
         <h2>Resultado da análise</h2>
         <p>Tivemos alguns problemas no servidor.</p>
-        <Link to="/">Tente novamente</Link>
+        <Link to={{ pathname: '/', search: `?id=${chatId}` }}> Tente novamente</Link>
       </div>
     );
   }
@@ -35,23 +38,15 @@ const ResultPage = () => {
         <div>
           <p>Status: Sucesso!</p>
           <div className="token-container">
-            <p>Token de acesso (informe esse token no bot):</p>
-            <input
-              type="text"
-              id="token-field"
-              value={data.token}
-              readOnly
-            />
-            <button onClick={handleCopyToken} className="copy-button">
-              {isCopied ? 'Copiado!' : 'Copiar Token'}
-            </button>
+            <p>Login efetuado! Aguarde a mensagem do BOT</p>
+           
           </div>
         </div>
       )}
       {data && data.status !== 'SUCCEEDED' && (
         <div>
           <p>Analise falhou: {data.status}</p>
-          <Link to="/">Tente novamente</Link>
+          <Link to={{ pathname: '/', search: `?id=${chatId}` }}> Tente novamente</Link>
         </div>
       )}
     </div>

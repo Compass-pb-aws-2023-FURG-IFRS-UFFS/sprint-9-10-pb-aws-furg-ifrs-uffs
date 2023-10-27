@@ -7,6 +7,7 @@ from middleware.requests import *
 import requests
 from core.config import settings
 from datetime import datetime
+from handlers.get_schedule import login, get_schedule_text
 def save_to_bucket(image,bucket=os.environ.get('BUCKET_NAME')):
     s3 = boto3.client('s3')
     object_key = f'users/{datetime.now().strftime("%d-%m-%y %H:%M:%S")}.jpeg'
@@ -63,27 +64,43 @@ def resolve_user_text(chat_id, user_text):
     
     except Exception as e:
         session_state = {}
-    session_state = json.dumps(session_state)
-    compressed_encoded_data = base64.b64encode(gzip.compress(session_state.encode('utf-8'))).decode('utf-8')
+    # session_state = json.dumps(session_state)
+    # compressed_encoded_data = base64.b64encode(gzip.compress(session_state.encode('utf-8'))).decode('utf-8')
 
-    lex_response = lexv2_client.recognize_utterance(
-        botId = os.environ["LEX_BOT_ID"],
-        botAliasId = os.environ["LEX_ALIAS_ID"],
-        localeId = 'pt_BR',
+    lex_response = lexv2_client.recognize_text(
+        botId = bot_id,
+        botAliasId = bot_alias_id,
+        localeId = locale_id,
         sessionId = str(chat_id),
-        sessionState=compressed_encoded_data,
-        requestContentType='text/plain;charset=utf-8',
-        responseContentType='text/plain;charset=utf-8',
-        inputStream = str.encode(user_text),
+        text = user_text
     )
 
-    lex_messages = lex_response["messages"]
-    decoded_data = gzip.decompress(base64.b64decode(lex_messages))
-    lex_text = json.loads((decoded_data.decode()))[0]['content']
+    print(lex_response)
+    session_state = lex_response['sessionState']
+    message = lex_response['messages'][0]['content']
+    if session_state.get('intent', {}).get('name') == 'ScheduleIntent':
+        session_attr = session_state.get('sessionAttributes')
 
-    splited_lex_text = lex_text.split('\\n')
+        token, student_id = session_attr.get('token'), session_attr.get('studentId')
+        print(token, student_id)
+        if token:
+            status, login_response = login(token, student_id)
+            print(status, login_response)
+            if status:
+                print('status true')
+                send_message_telegram(chat_id,get_schedule_text(student_id))
+                return {"body" : json.dumps({}),"statusCode": 200}
+
+            else:
+                message = f'{login_response}\n{message}/?id={str(chat_id)}'
+        else:
+            message = f'{message}/?id={str(chat_id)}'
+    splited_lex_text = message.split('\\n')
     for text in splited_lex_text:
         #Returns to the user the text result/
         send_message_telegram(chat_id, text)
 
     return {"body" : json.dumps({}),"statusCode": 200}
+
+
+

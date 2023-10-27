@@ -89,6 +89,14 @@ functions:
           method: POST
           cors: true
 
+  updateSessionLex:
+    handler: handlers/update_lex_session.handler
+    events:
+      - http:
+          path: lex
+          method: POST
+          cors: true
+
 plugins:
   - serverless-offline
   - serverless-python-requirements

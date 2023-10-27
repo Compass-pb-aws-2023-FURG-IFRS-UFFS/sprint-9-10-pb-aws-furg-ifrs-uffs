@@ -1,11 +1,13 @@
 service: auth-service-backend
 frameworkVersion: '3'
+useDotenv: true
 provider:
   name: aws
   runtime: python3.9
   environment:
     BUCKET_NAME: ${ssm:uffs-bot-auth-bucket-name}
     DYNAMO_DB_USERS_TABLE: ${ssm:uffs-bot-users-table-name}
+    BOT_BACKEND_API_URL: ${env:BOT_BACKEND_API_URL}
 
   iam:
     role:
@@ -36,6 +38,11 @@ provider:
             - dynamodb:Scan
           Resource:
             - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.DYNAMO_DB_USERS_TABLE}
+        - Effect: Allow
+          Action:
+            - lex:*
+          Resource:
+            - "*"
       
 functions:
   createLivenessSession:

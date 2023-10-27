@@ -55,3 +55,12 @@ def format_text(data):
 
     
     return formatted_text
+
+
+def get_schedule_text(student_id):
+    schedule = get_schedule_from_student(student_id)
+    if not schedule:
+        return ('Não foi possível encontrar horários. Por favor, cadastre os horários fazendo upload do seu atestado de matrícula em formato HTML')
+    schedule = format_text(schedule)
+
+    return schedule

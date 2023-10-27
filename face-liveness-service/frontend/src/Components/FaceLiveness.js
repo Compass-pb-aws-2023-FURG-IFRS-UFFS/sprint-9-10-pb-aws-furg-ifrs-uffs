@@ -3,8 +3,13 @@ import { Loader } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { FaceLivenessDetector } from "@aws-amplify/ui-react-liveness";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 function FaceLiveness({ faceLivenessAnalysis }) {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const chatId = queryParams.get('id');
+
   const [loading, setLoading] = useState(true);
   const [sessionId, setSessionId] = useState(null);
   const [matricula, setMatricula] = useState("");
@@ -12,6 +17,7 @@ function FaceLiveness({ faceLivenessAnalysis }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+
     const fetchCreateLiveness = async () => {
       if (matricula.trim() === "" || matricula.length < 10) {
         setLoading(false); // Stop loading if matricula is not provided
@@ -40,11 +46,12 @@ function FaceLiveness({ faceLivenessAnalysis }) {
   const handleAnalysisComplete = async () => {
     const endpoint = process.env.REACT_APP_BASE_URL;
     await new Promise((r) => setTimeout(r, 2000));
+    console.log('chat_id ' + chatId)
 
     try {
       const response = await fetch(endpoint + "/results", {
         method: "POST",
-        body: JSON.stringify({ session: sessionId, student_id: matricula}),
+        body: JSON.stringify({ session: sessionId, student_id: matricula, chat_id: chatId}),
       });
 
       const data = await response.json();
@@ -94,7 +101,8 @@ function FaceLiveness({ faceLivenessAnalysis }) {
                 disableInstructionScreen={true}
                 onError={(error) => {
                 console.error(error);
-                navigate("/result");
+                const path = "/result" + "?id="+chatId
+                navigate(path);
 
               }}
             />
