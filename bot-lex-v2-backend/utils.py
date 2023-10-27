@@ -117,8 +117,6 @@ def get_news_from_dynamo():
     # Sort the response by id
     response['Items'].sort(key=lambda x: int(x['id']))
     
-    # Print the response
-    print(response)
     return response['Items']
 
 
@@ -143,8 +141,6 @@ def formated_news():
         string += news[i]['texto'] + '\n'
         string += 'Leia a notícia completa em: ' + news[i]['link'] + '\n'
         string += 'Ouça a notícia completa em: ' + news[i]['audio'] + '\n\n'
-
-    print(string)
 
     return string
 
@@ -185,8 +181,6 @@ def get_news():
             'texto': textos[0][i].p.text.split('...')[0] + '...',
             'link': 'https://cc.uffs.edu.br' + textos[0][i].a['href'],
         })
-
-    print(news_dict)
 
     return news_dict
 
@@ -258,25 +252,27 @@ def get_news_url(news_text: str, news_id: int) -> str:
   
 
 def save_to_dynamo(noticias):
-    dynamodb = boto3.resource('dynamodb')
+    try:
+        dynamodb = boto3.resource('dynamodb')
 
-    table_name = os.environ['NEWS_TABLE_NAME']
-    
-    table = dynamodb.Table(table_name)
+        table_name = os.environ['NEWS_TABLE_NAME']
+        
+        table = dynamodb.Table(table_name)
+        
+        for noticia in noticias['noticias']:
+            response = table.put_item(
+                Item={
+                    'id': noticia['id'],
+                    'titulo': noticia['titulo'],
+                    'tag': noticia['tag'],
+                    'data': noticia['data'],
+                    'texto': noticia['texto'],
+                    'link': noticia['link'],
+                    'audio': noticia['audio']
+                }
+            )
 
-    for noticia in noticias['noticias']:
-        response = table.put_item(
-            Item={
-                'id': noticia['id'],
-                'titulo': noticia['titulo'],
-                'tag': noticia['tag'],
-                'data': noticia['data'],
-                'texto': noticia['texto'],
-                'link': noticia['link'],
-                'audio': noticia['audio']
-            }
-        )
-    
-    # Print the response
-    print(response)
-    return True
+        return True
+    except Exception as e:
+        print(str(e))
+        return False
