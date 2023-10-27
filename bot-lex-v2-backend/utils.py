@@ -96,6 +96,56 @@ def get_name(message):
 # NEWS SECTION
 
 
+def get_news_from_dynamo():
+    """
+    Retorna as notícias do site do curso de Ciência da Computação
+
+    :return: Dicionário com as notícias
+
+    Exemplo de uso:
+    get_news_from_dynamo()
+    """
+
+    dynamodb = boto3.resource('dynamodb')
+
+    table_name = os.environ['NEWS_TABLE_NAME']
+    
+    table = dynamodb.Table(table_name)
+
+    response = table.scan()
+    
+    # Print the response
+    print(response)
+    return response['Items']
+
+
+def formated_news():
+    """
+    Formata as notícias para o formato de texto para serem enviadas ao usuário
+
+    :param news: as notícias
+    :return: as notícias formatadas
+
+    Exemplo de uso:
+    format_news(news)
+    """
+
+    news = get_news_from_dynamo()
+
+    string = ''
+
+    for i in range(5):
+        string += news[i]['titulo'] + '\n'
+        string += 'Publicada em: ' + news[i]['data'] + '\n'
+        string += news[i]['texto'] + '\n'
+        string += 'Leia a notícia completa em: ' + news[i]['link'] + '\n'
+        string += 'Ouça a notícia completa em: ' + news[i]['audio'] + '\n\n'
+
+    print(string)
+
+    return string
+
+
 def get_news():
     """
     Retorna as notícias do site do curso de Ciência da Computação
@@ -133,15 +183,9 @@ def get_news():
             'link': 'https://cc.uffs.edu.br' + textos[0][i].a['href'],
         })
 
-    string = ''
+    print(news_dict)
 
-    for i in range(5):
-        string += news_dict['noticias'][i]['titulo'] + '\n'
-        string += news_dict['noticias'][i]['data'] + '\n'
-        string += news_dict['noticias'][i]['texto'] + '\n'
-        string += news_dict['noticias'][i]['link'] + '\n\n'
-
-    return string
+    return news_dict
 
 
 def get_full_news(url):

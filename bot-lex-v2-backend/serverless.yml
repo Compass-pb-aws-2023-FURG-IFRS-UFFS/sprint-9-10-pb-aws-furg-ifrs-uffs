@@ -43,6 +43,11 @@ provider:
           Resource:
             - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.DYNAMO_DB_USERS_TABLE}
         - Effect: Allow
+          Action:
+            - dynamodb:Scan
+          Resource:
+            - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.NEWS_TABLE_NAME}
+        - Effect: Allow
           Action: lambda:InvokeFunction
           Resource: "*"
         - Effect: Allow
