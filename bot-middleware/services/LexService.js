@@ -3,14 +3,16 @@ const { LexRuntimeV2Client, RecognizeTextCommand } = require("@aws-sdk/client-le
 
 /**
  * Service class for interacting with Amazon Lex service.
+ * @class
+ * @author Josué Fernandes
  */
 class LexService {
 
-  /**
-   * Constructor for LexService class.
-   * Initializes the LexRuntimeV2Client.
-   */
   constructor() {
+    /**
+     * Amazon Lex client for sending messages and receiving responses.
+     * @type {LexRuntimeV2Client}
+     */
     this.lexClient = new LexRuntimeV2Client();
   }
 
@@ -20,6 +22,7 @@ class LexService {
    * @param {string} message - The message to be sent to the bot.
    * @param {string} sessionId - The unique identifier for the user's session.
    * @returns {Promise<string>} - A promise that resolves to the response from the bot.
+   * @throws {Error} - Throws an error if there is a problem sending the message to Lex.
    */
   async sendMessage(message, sessionId) {
     const params = {

@@ -3,16 +3,27 @@ const { TWILIO_DEFAULT_NUMBER, AUTH_TOKEN, ACCOUNT_SID } = require("../core/conf
 const client = require("twilio")
 const axios = require("axios")
 
+/**
+ * Service for interacting with Twilio API.
+ * @class
+ * @author Josué Fernandes
+ */
 class TwilioService {
+
   constructor() {
+      /**
+     * Twilio client for sending messages.
+     * @type {require("twilio").Twilio}
+     */
     this.twilioClient = client(ACCOUNT_SID, AUTH_TOKEN)
   }
 
   /**
-   * Sends a message to a specific number. This is a shortcut for sending a message to TWILIO_DEFAULT_NUMBER
+   * Sends a message to a specific phone number.
    *
-   * @param body - The text of the message
-   * @param recipientNumber - The number to send the message to.
+   * @param {string} body - The text of the message.
+   * @param {string} recipientNumber - The phone number to send the message to.
+   * @returns {Promise<string>} - A success message or an error message.
    */
   async sendMessage(body, recipientNumber) {
     const params = {
@@ -23,10 +34,17 @@ class TwilioService {
     try {
       await this.twilioClient.messages.create(params)
     } catch (error) {
-      console.error("Erro inesperado:", error)
-      return "Erro inesperado"
+      console.error("Unexpected error:", error)
     }
   }
+
+  /**
+   * Handles downloading media from a given URL.
+   *
+   * @param {string} mediaUrl - The URL of the media to be downloaded.
+   * @returns {Promise<Buffer>} - The downloaded media as a Buffer.
+   * @throws {Error} - Throws an error if the download fails.
+   */
   async handleDownload(mediaUrl) {
     try {
       const response = await axios.get(mediaUrl, {
@@ -40,7 +58,7 @@ class TwilioService {
       const imageData = Buffer.from(response.data, "binary").toString("base64")
       return Buffer.from(imageData, "base64")
     } catch (error) {
-      console.error("Erro na solicitação:", error)
+      console.error("Request error:", error)
       throw error
     }
   }
