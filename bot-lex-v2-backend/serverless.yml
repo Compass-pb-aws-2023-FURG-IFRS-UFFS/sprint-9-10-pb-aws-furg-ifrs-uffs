@@ -72,9 +72,6 @@ functions:
   router:
     handler: router.handle_router
 
-  getContactIntent:
-    handler: handlers/get_contact.handle_get_contact_intent
-  
   getScheduleIntent:
     handler: handlers/get_schedule.handle_get_schedule_intent
     
