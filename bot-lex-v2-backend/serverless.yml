@@ -69,9 +69,6 @@ provider:
 
 functions:
   
-  getDocumentsIntent:
-    handler: handlers/get_documents.handle_get_documents_intent
-
   router:
     handler: router.handle_router
 
