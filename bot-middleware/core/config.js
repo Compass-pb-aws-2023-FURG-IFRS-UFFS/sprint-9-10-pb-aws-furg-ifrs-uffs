@@ -10,9 +10,7 @@ class Settings {
     this.BOT_ALIAS_ID = process.env.BOT_ALIAS_ID;
     this.LOCALE_ID = process.env.LOCALE_ID;
     this.TWILIO_DEFAULT_NUMBER = process.env.TWILIO_DEFAULT_NUMBER;
-    this.REGION = process.env.REGION;
-    this.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
-    this.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+    this.INITIAL_MESSAGE = process.env.INITIAL_MESSAGE
   }
 }
 
