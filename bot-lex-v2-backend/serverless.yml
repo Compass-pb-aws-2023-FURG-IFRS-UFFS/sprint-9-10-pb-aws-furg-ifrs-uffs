@@ -68,8 +68,6 @@ provider:
           Resource: ${env:TELEGRAM_ARN}
 
 functions:
-  contactUsIntent:
-    handler: handlers/contact_us.handle_contact_us_intent
   
   getDocumentsIntent:
     handler: handlers/get_documents.handle_get_documents_intent
