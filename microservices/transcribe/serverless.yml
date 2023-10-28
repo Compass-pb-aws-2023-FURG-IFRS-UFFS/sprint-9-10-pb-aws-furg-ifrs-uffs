@@ -1,2 +1,10 @@
 service: transcribe-microservice
 useDotenv: true
+
+functions:
+  transcription:
+    handler: handler.getTranscription
+    events:
+      - httpApi:
+          path: /transcribe
+          method: post
