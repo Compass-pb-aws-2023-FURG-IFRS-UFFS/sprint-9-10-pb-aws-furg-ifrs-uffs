@@ -1,64 +1,47 @@
-const { handleResponse } = require("./helper/helper");
-const { handleImage, handleAudio } = require("./helper/media");
-const { ACCOUNT_SID } = require("./core/config");
-const LexService = require("./services/LexService");
-const TwilioService = require("./services/TwilioService");
-const querystring = require("querystring");
+const LexService = require("./services/LexService")
+const TwilioService = require("./services/TwilioService")
+const S3Service = require("./services/S3Service")
+const { handleResponse } = require("./helper/helper")
 
-const lexService = new LexService();
-const twilioService = new TwilioService();
-
-async function handleEvents(event) {
+const handleIntent = async (event, context) => {
   try {
-    console.log("EVENT\n\n\n", event);
-    const formData = querystring.parse(event.body);
-    console.log("BODY\n\n\n", formData);
-    return formData;
+    const formData = new URLSearchParams(event["body"])
+
+    const numMedia = formData.get("NumMedia")
+    const recipientNumber = formData.get("From")
+    const sessionId = formData.get("WaId")
+    let messageToLex = formData.get("Body")
+
+    if (numMedia != 0) {
+      const type = formData.get("MediaContentType0").split("/")[0]
+      if (type == "audio" || type == "image") {
+        const mediaUrl = formData.get("MediaUrl0")
+        const extension = type == "audio" ? "mp3" : "jpeg"
+        const body = await new TwilioService().handleDownload(mediaUrl)
+        const bucketKey = await new S3Service().saveToS3(body, extension)
+        const params = {
+          "media": type,
+          "extension": extension,
+          "bucketKey": bucketKey
+        }
+        messageToLex = new URLSearchParams(params).toString()
+      }
+    }
+    console.log(sessionId);
+    const messageToUser = await new LexService().sendMessage(messageToLex, sessionId)
+
+
+    // await twilioService.sendMessage(message, recipientNumber)
+
+    return handleResponse(200, messageToUser)
   } catch (error) {
-    console.error("Error :", error);
-    throw error;
+    console.error("Error:", error)
+    return handleResponse(500, "Internal Server Error")
   }
 }
 
-module.exports.handleIntent = async (event, context) => {
-  try {
-    const formData = await handleEvents(event);
-    const numMedia = formData["NumMedia"];
-    const recipientNumber = formData["From"];
-    const sessionId = formData["WaId"];
-    let message = formData["Body"];
+// async function handleIntent(event, context) {
 
-    if (numMedia == 0) {
-      // Send the message to lex and obtain the response message
-      message = await lexService.sendMessage(message, sessionId);
-    } else {
-      const [type, extension] = formData["MediaContentType0"].split("/");
-      const messageSid = formData["MessageSid"];
-      const mediaId = Array.from(formData["MediaUrl0"].split("Media/")).pop();
-      console.log("media id");
-      console.log(mediaId);
-      console.log("extensao");
-      console.log(extension);
-      const urlNova = `https://api.twilio.com/2010-04-01/Accounts/${ACCOUNT_SID}/Messages/${messageSid}/Media/${mediaId}`;
-      console.log("nova URL");
-      console.log(urlNova);
-      const actions = {
-        audio: handleAudio,
-        image: handleImage,
-      };
-      if (actions[type]) {
-        // Espere até que a função handleImage (ou handleAudio) seja concluída
-        message = await actions[type](urlNova, extension);
-      } else {
-        message = "Unsupported content type";
-      }
-    }
-
-    await twilioService.sendMessage(message, recipientNumber);
-
-    return handleResponse(200, "Working");
-  } catch (error) {
-    console.error("Error:", error);
-    throw error;
-  }
-};
+//   return handleResponse(200, "Deu Bom")
+// }
+module.exports = { handleIntent }
