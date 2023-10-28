@@ -1,18 +1,25 @@
-import os
-import json
-import boto3
-
-client = boto3.client('lambda')
+# dessa forma todos os arquivos sao carregados quando chamamos a router
+# ha espaco para melhora aqui !!
+from handlers.contact_us import contact_us
+from handlers.contact import contact
+from handlers.documents import documents
+from handlers.news import news
+#from handlers.schedule import schedule
 
 def handle_router(event, context):
     intent_name = event['sessionState']['intent']['name']
-    fn_name = os.environ.get(intent_name)
-    print(f"Intent: {intent_name} -> Lambda: {fn_name}")
-    if (fn_name):
-        invoke_response = client.invoke(FunctionName=fn_name, Payload = json.dumps(event))
-        print(invoke_response)
-        payload = json.load(invoke_response['Payload'])
-        return payload
-    raise Exception('No environment variable for intent: ' + intent_name)
 
-
+    intent_handlers = {
+        "ContactUsIntent": contact_us,
+        "GetContactIntent": contact,
+        "GetDocumentsIntent": documents,
+        "GetNewsIntent": news,
+        # "GetRUMenu": ru_menu,
+        # "ScheduleIntent": schedule,
+    }
+    
+    if intent_name in intent_handlers:
+        print(f"Intent: {intent_name} -> Is being executed")
+        return intent_handlers[intent_name](event)
+        
+    raise Exception('No handler for intent: ' + intent_name)

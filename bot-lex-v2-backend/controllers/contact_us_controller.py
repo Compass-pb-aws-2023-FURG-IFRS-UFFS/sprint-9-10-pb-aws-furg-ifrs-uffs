@@ -8,6 +8,7 @@ def handle_contact_us_intent(event):
         slots = event['interpretations'][0]['intent']['slots']
         message = slots['message']['value']['interpretedValue']
         
+        # send message to devs by email (sns service)
         dispatch_to_devs(message)
 
         return create_response(event, 'A mensagem foi encaminhada para os desenvolvedores!')

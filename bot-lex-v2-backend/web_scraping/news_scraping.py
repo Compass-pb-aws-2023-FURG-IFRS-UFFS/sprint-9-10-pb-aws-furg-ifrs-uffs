@@ -4,40 +4,40 @@ import requests
 def scrap_all_news_basic_info() -> dict:
     """
     Retorna informacoes sobre todas as noticias do site.
-    Nao retorna o corpo completo da noticia
+    returns basic info about all news from the site
+    (does not returns the full body)
 
-    :return: Dicionário com as notícias
+    :return: news dict
 
-    Exemplo de uso:
-    scrap_news()
+    usage example:
+    scrap_all_news_basic_info()
     """
 
+    # scrapping news from uffs.edu.br
     url = "https://cc.uffs.edu.br/noticias/"
     response = requests.get(url)
-
-    soup = BeautifulSoup(response.content, "html.parser") # Instancia o BeautifulSoup
-
+    soup = BeautifulSoup(response.content, "html.parser")
     noticias = soup.find_all("div", class_="col-12 text-left") # Busca as notícias
 
-    # Busca os textos das notícias
-    textos = []
+    # filters news's text
+    news_info = []
     for noticia in noticias:
-        textos.append((noticia.find_all('div', class_='col-9 post-row-content')))
+        news_info.append((noticia.find_all('div', class_='col-9 post-row-content')))
 
     news_dict = {
         'last_update': '',
         'noticias': []
     }
 
-    # Monta o dicionário com as notícias
-    for i in range(len(textos[0])):
+    # mounts news's dict 
+    for i in range(len(news_info[0])):
         news_dict['noticias'].append({
             'id': str(i),
-            'titulo': textos[0][i].a.text,
-            'tag': textos[0][i].span.text,
-            'data': textos[0][i].time.text,
-            'texto': textos[0][i].p.text.split('...')[0] + '...',
-            'link': 'https://cc.uffs.edu.br' + textos[0][i].a['href'],
+            'titulo': news_info[0][i].a.text,
+            'tag': news_info[0][i].span.text,
+            'data': news_info[0][i].time.text,
+            'texto': news_info[0][i].p.text.split('...')[0] + '...',
+            'link': 'https://cc.uffs.edu.br' + news_info[0][i].a['href'],
         })
 
     return news_dict
@@ -45,25 +45,24 @@ def scrap_all_news_basic_info() -> dict:
 
 def scrap_full_news_by_url(url: str) -> dict:
     """
-    Recebe a url da notícia e retorna o texto completo
+    receives news url and returns its full body content
 
-    :param url: a url da notícia
-    :return: o texto completo da notícia
+    :param url: news url
+    :return: its complete body
 
-    Exemplo de uso:
+    usage example:
     get_full_news("https://cc.uffs.edu.br/noticias/curso-de-ciencia-da-computacao-abre-vagas-para-bolsistas/")
     """
 
-    response = requests.get(url) # Faz a requisição da página
-    
-    soup = BeautifulSoup(response.content, 'html.parser') # Instancia o BeautifulSoup
-    
-    content = soup.find_all('div', class_='post-content mt-5')[0] # Busca o conteúdo da notícia
+    # scrapping full body from cc.uffs
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    news_body_content = soup.find_all('div', class_='post-content mt-5')[0]
         
     news_dict = {'text': ''}
     
-    # Monta o dicionário com o texto completo da notícia
-    for p in content:
-        news_dict['text'] += p.text.strip().replace('\n', ' ')
+    # mounts news body content dict
+    for paragraph in news_body_content:
+        news_dict['text'] += paragraph.text.strip().replace('\n', ' ')
         
     return news_dict

@@ -10,7 +10,7 @@ def scrap_documents(document_name):
     :return: Python dictionary with documents that contain the text
 
     Exemplo de uso:
-    get_documents("Documento 1")
+    scrap_documents("Documento 1")
     """
     document_name = document_name.lower()
     url = "https://www.uffs.edu.br/campi/chapeco/cursos/graduacao/ciencia-da-computacao/documentos"

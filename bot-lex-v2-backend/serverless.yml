@@ -68,7 +68,6 @@ provider:
           Resource: ${env:TELEGRAM_ARN}
 
 functions:
-  
   router:
     handler: router.handle_router
 

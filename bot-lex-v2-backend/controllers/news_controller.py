@@ -1,14 +1,14 @@
-import boto3
-from botocore.exceptions import BotoCoreError, ClientError
-
 from core.config import settings
-from services.dynamo import get_all_news
 from utils import create_response
 
+from services.dynamo import get_all_news
+from services.polly import tts_output_directly_on_s3
 
 def handle_news_intent(event):
     try:
+        # get formatted news msg
         news = get_news_fmt()
+
         return create_response(event, news)
     except Exception as e:
         print(str(e))
@@ -17,18 +17,17 @@ def handle_news_intent(event):
 
 def get_news_fmt() -> str:
     """
-    retorna 5 noticiais mais recentes formatadas para mensagem 
+    get and format 5 most recent news from source cc.uffs
 
-    :param news: as notícias
-    :return: as notícias formatadas
+    :return: msg
 
-    Exemplo de uso:
+    usage example:
     get_news_fmt()
     """
 
+    # scraping from cc.uffs
     news = get_all_news() 
 
-    # Monta a mensagem com as notícias
     msg = ''
     for i in range(5):
         msg += f'{news[i]["titulo"]}... \n'
@@ -40,45 +39,22 @@ def get_news_fmt() -> str:
     return msg
 
 
-def get_news_url(news_text: str, news_id: int) -> str:
+def get_news_audio_url(news_text: str, news_id: int) -> str:
     """
-    Recebe o texto da notícia e retorna o link para o arquivo de áudio no bucket
+    get news content (body) and returns a s3 link with the tts
 
-    :param news_text: a notícia em formato de texto
-    :param news_id: identificador único da notícia
-    :return: o link para o arquivo de áudio no bucket
+    :param news_text: news body
+    :param news_id: news id
+    :return: s3 object link
 
-    Exemplo de uso:
-    get_news_url("A Universidade Federal da Fronteira Sul (UFFS) está com inscrições abertas.", 123)
+    usage example:
+    get_news_audio_url("A Universidade Federal da Fronteira Sul (UFFS) está com inscrições abertas.", 123)
     """
 
-    s3 = boto3.client('s3') # Instancia o cliente S3
-
-    polly = boto3.client('polly') # Instancia o cliente Polly
-
-    folder_name = settings.NEWS_FOLDER_NAME
     bucket_name = settings.NEWS_BUCKET_NAME
-    key = folder_name + f'{news_id}' # Nome do arquivo no bucket
+    key = settings.NEWS_FOLDER_NAME + f'{news_id}'
 
-    try:
-        # Converte o texto da notícia em áudio
-        response = polly.start_speech_synthesis_task(
-            Text=news_text,
-            Engine='neural',
-            OutputS3BucketName=f'{bucket_name}',
-            OutputS3KeyPrefix=key,
-            LanguageCode='pt-BR',
-            OutputFormat='mp3',
-            VoiceId='Camila',  # Vitoria | Thiago
-            SampleRate='24000',
-            TextType='text'
-        )
-        
-        # Monta a url do arquivo de áudio
-        url = f"https://{bucket_name}.s3.amazonaws.com/{key}.{response['SynthesisTask']['TaskId']}.mp3"
-        return url
-
-    # Caso ocorra algum erro, retorna None
-    except (BotoCoreError, ClientError) as error:
-        print(error) # Printa o erro no CloudWatch
-        return None
+    # tts with polly
+    audio_url = tts_output_directly_on_s3(news_text, bucket_name, key)
+    
+    return audio_url
