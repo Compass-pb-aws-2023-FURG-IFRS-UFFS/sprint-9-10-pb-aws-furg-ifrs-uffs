@@ -1,12 +1,12 @@
 const { Rekognition } = require("@aws-sdk/client-rekognition");
-const { BUCKET_NAME } = require("../../../bot-middleware/core/config");
+const { BUCKET_NAME } = require("../core/config");
 
 class RekognitionService {
   constructor() {
     this.rekognitionClient = new Rekognition();
   }
 
-  async detectText(photo) {
+  async toText(photo) {
     const rekognitionParams = {
       Image: {
         S3Object: {
@@ -15,6 +15,7 @@ class RekognitionService {
         },
       },
     };
+    console.log("rekognitionParams", rekognitionParams);
 
     const response = await this.rekognitionClient.detectText(rekognitionParams);
     const detectedTextArray = response.TextDetections.map((textDetection) => {

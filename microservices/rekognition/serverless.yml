@@ -1,2 +1,24 @@
 service: rekognition-microservice
 useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+  environment:
+    BUCKET_NAME: ${env:BUCKET_NAME}
+
+functions:
+  handleIntent:
+    handler: /controllers/ToText.handler
+    events:
+      - http:
+          path: /toText
+          method: post
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    host: "127.0.0.1"

@@ -8,5 +8,11 @@
   },
   "keywords": [],
   "author": "Rafael Messias, Yuri Souza",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "serverless-offline": "^13.2.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-rekognition": "^3.438.0"
+  }
 }
