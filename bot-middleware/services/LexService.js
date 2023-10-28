@@ -33,8 +33,8 @@ class LexService {
     try {
       const returnLex = await this.lexClient.send(command);
       const intentName = returnLex.sessionState.intent.name;
-
-      if(returnLex.messages) response = returnLex.messages[0].content;
+      let response = "Occured an error"
+      if(returnLex.messages[0]) response = returnLex.messages[0].content;
       if (intentName === "Hello") response += INITIAL_MESSAGE
       
       return response;
