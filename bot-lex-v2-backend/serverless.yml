@@ -8,21 +8,26 @@ provider:
   stage: dev
   region: us-east-1 
   environment:
-    SNS_TOPIC_ARN: ${ssm:uffs-bot-developers-topic-arn}
     ContactUsIntent: ${env:ContactUsIntent}
     GetContactIntent: ${env:GetContactIntent}
-    ScheduleIntent: ${env:ScheduleIntent}
     GetDocumentsIntent: ${env:GetDocumentsIntent}
     GetNewsIntent: ${env:GetNewsIntent}
-    LEX_BOT_ID: ${env:BOT_ID}
-    LEX_ALIAS_ID: ${env:BOT_ALIAS_ID}
-    TELEGRAM_TOKEN: ${env:TELEGRAM_TOKEN}
+    ScheduleIntent: ${env:ScheduleIntent}
+
     CC_API_BASE_URL: ${env:CC_API_BASE_URL}
-    SIGN_IN_LAMBDA: ${env:SIGN_IN_LAMBDA}
+    LEX_ALIAS_ID: ${env:BOT_ALIAS_ID}
+    LEX_BOT_ID: ${env:BOT_ID}
+    TELEGRAM_TOKEN: ${env:TELEGRAM_TOKEN}
+    
     AUTH_API_URL: ${env:AUTH_API_URL}
-    DYNAMO_DB_USERS_TABLE: ${ssm:uffs-bot-users-table-name}
     BUCKET_NAME: ${ssm:uffs-bot-auth-bucket-name}
-    FOLDER_NAME: ${env:FOLDER_NAME}
+    DYNAMO_DB_USERS_TABLE: ${ssm:uffs-bot-users-table-name}
+    SIGN_IN_LAMBDA: ${env:SIGN_IN_LAMBDA}
+    
+    SNS_TOPIC_ARN: ${ssm:uffs-bot-developers-topic-arn}
+
+    NEWS_BUCKET_NAME: ${env:NEWS_BUCKET_NAME}
+    NEWS_FOLDER_NAME: ${env:NEWS_FOLDER_NAME}
     NEWS_TABLE_NAME: ${env:NEWS_TABLE_NAME}
     
   iam:
@@ -68,9 +73,6 @@ functions:
   
   getDocumentsIntent:
     handler: handlers/get_documents.handle_get_documents_intent
-
-  newsIntent:
-    handler: handlers/news.handle_news_intent
 
   router:
     handler: router.handle_router
