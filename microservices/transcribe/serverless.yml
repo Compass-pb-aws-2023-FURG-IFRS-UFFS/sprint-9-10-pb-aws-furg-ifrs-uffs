@@ -1,10 +1,33 @@
 service: transcribe-microservice
 useDotenv: true
 
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1 
+
+  iam:
+    role:
+      name: role-for-transcribe-microservice
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:GetObjectAttributes
+            - s3:PutObject
+          Resource:
+            - arn:aws:s3:::${env:BUCKET_NAME}/*
+        - Effect: Allow
+          Action:
+            - transcribe:StartTranscriptionJob
+          Resource: "*"
+
 functions:
-  transcription:
+  getTranscription:
     handler: handler.getTranscription
     events:
       - httpApi:
           path: /transcribe
           method: post
+plugins:
+  - serverless-offline
