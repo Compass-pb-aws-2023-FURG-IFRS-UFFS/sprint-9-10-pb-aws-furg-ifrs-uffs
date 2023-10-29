@@ -1,5 +1,5 @@
-const { BOT_ID, BOT_ALIAS_ID, LOCALE_ID, INITIAL_MESSAGE } = require("../core/config");
-const { LexRuntimeV2Client, RecognizeTextCommand } = require("@aws-sdk/client-lex-runtime-v2");
+const { BOT_ID, BOT_ALIAS_ID, LOCALE_ID, INITIAL_MESSAGE } = require("../core/config")
+const { LexRuntimeV2Client, RecognizeTextCommand } = require("@aws-sdk/client-lex-runtime-v2")
 
 /**
  * Service class for interacting with Amazon Lex service.
@@ -13,7 +13,7 @@ class LexService {
      * Amazon Lex client for sending messages and receiving responses.
      * @type {LexRuntimeV2Client}
      */
-    this.lexClient = new LexRuntimeV2Client();
+    this.lexClient = new LexRuntimeV2Client()
   }
 
   /**
@@ -31,21 +31,26 @@ class LexService {
       localeId: LOCALE_ID,
       sessionId: sessionId,
       text: message,
-    };
-    const command = new RecognizeTextCommand(params);
+    }
+    const command = new RecognizeTextCommand(params)
     try {
-      const returnLex = await this.lexClient.send(command);
-      const intentName = returnLex.sessionState.intent.name;
-      let response = "Occured an error"
-      if(returnLex.messages[0]) response = returnLex.messages[0].content;
+      const returnLex = await this.lexClient.send(command)
+      const intentName = returnLex.sessionState.intent.name
+      let response = ""
+      if(returnLex.messages[0]) {
+        for(let i = 0; i < returnLex.messages.length; i++) {
+          const currentMessage = returnLex.messages[i].content
+          response += `${currentMessage}\n\n`
+        }
+      }
       if (intentName === "Hello") response += INITIAL_MESSAGE
-      
-      return response;
+      if(response == "") response = "An Error Ocurred"
+      return response
     } catch (error) {
-      console.error("Unexpected error:", error);
-      return "Unexpected error occurred";
+      console.error("Unexpected error:", error)
+      return "Unexpected error occurred"
     }
   }
 }
 
-module.exports = LexService;
+module.exports = LexService
