@@ -1,4 +1,4 @@
-const crypto = require("crypto");
+const crypto = require("crypto")
 
 /**
  * Creates a SHA256 hash of a string. Used to verify passwords before they are sent to the server
@@ -7,9 +7,9 @@ const crypto = require("crypto");
  * @return { string } The hash as a hex string of
  */
 function createHash(str) {
-  const hash = crypto.createHash("sha256");
-  hash.update(str);
-  return hash.digest("hex");
+  const hash = crypto.createHash("sha256")
+  hash.update(str)
+  return hash.digest("hex")
 }
 
 /**
@@ -40,6 +40,6 @@ function handleResponse(statusCode, message) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ body: message }),
-  };
+  }
 }
-module.exports = { handleResponse, createHash };
+module.exports = { handleResponse, createHash }
