@@ -3,16 +3,21 @@ useDotenv: true
 
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs18.x
   region: us-east-1
   environment:
     BUCKET_NAME: ${env:BUCKET_NAME}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - rekognition:DetectText
+      Resource: "*"
 
 functions:
-  handleIntent:
-    handler: /controllers/ToText.handler
+  toText:
+    handler: handler.handler
     events:
-      - http:
+      - httpApi:
           path: /toText
           method: post
 
