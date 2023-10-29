@@ -1,2 +1,40 @@
 service: equitalk-lex-backend
 useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1 
+  environment:
+    TEXT_TO_SPEECH_API: ${env:TEXT_TO_SPEECH_API}
+    SPEECH_TO_TEXT_API: ${env:SPEECH_TO_TEXT_API}
+    IMAGE_TO_TEXT_API: ${env:IMAGE_TO_TEXT_API}
+
+  iam:
+    role:
+      name: role-for-lambda-lex-bot
+      statements:
+        - Effect: Allow
+          Action: lambda:InvokeFunction
+          Resource: "*"
+        - Effect: Allow
+          Action:
+            - logs:CreateLogStream
+            - logs:TagResource
+            - logs:CreateLogGroup
+            
+          Resource: "arn:aws:lambda:us-east-1:262037493743:function:equitalk-lex-backend-dev-router*:*"
+        - Effect: Allow
+          Action: logs:PutLogEvents
+          Resource: "arn:aws:lambda:us-east-1:262037493743:function:equitalk-lex-backend-dev-router*:*:*"
+
+
+functions:
+  router:
+    handler: router.handler 
+
+plugins:
+  - serverless-offline
+custom:
+  serverless-offline:
+    host: '127.0.0.1'
