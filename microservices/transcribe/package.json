@@ -8,5 +8,19 @@
   },
   "keywords": [],
   "author": "Luiz Scarsi",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "serverless-offline": "^13.2.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-lex-runtime-v2": "^3.428.0",
+    "@aws-sdk/client-polly": "^3.428.0",
+    "@aws-sdk/client-rekognition": "^3.428.0",
+    "@aws-sdk/client-s3": "^3.428.0",
+    "@aws-sdk/client-transcribe": "^3.428.0",
+    "@aws-sdk/s3-request-presigner": "^3.430.0",
+    "axios": "^1.5.1",
+    "dotenv": "^16.3.1",
+    "twilio": "^4.18.1"
+  }
 }
