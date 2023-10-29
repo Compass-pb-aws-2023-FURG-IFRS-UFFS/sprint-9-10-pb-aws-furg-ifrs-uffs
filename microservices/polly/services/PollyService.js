@@ -2,28 +2,17 @@ const {
   PollyClient,
   SynthesizeSpeechCommand,
 } = require("@aws-sdk/client-polly");
-const S3Exception = require("../../../bot-middleware/exceptions/aws-exceptions/S3Exception");
-const PollyException = require("../../../bot-middleware/exceptions/aws-exceptions/PollyException");
+//const S3Exception = require("../../../bot-middleware/exceptions/aws-exceptions/S3Exception");
+//const PollyException = require("../../../bot-middleware/exceptions/aws-exceptions/PollyException");
 const { S3Client, PutObjectCommand, S3 } = require("@aws-sdk/client-s3");
-const createHash = require("../../../bot-middleware/helper/helper").createHash;
-const {
-  REGION,
-  AWS_ACCESS_KEY_ID,
-  AWS_SECRET_ACCESS_KEY,
-  BUCKET_NAME,
-} = require("../../../bot-middleware/core/config");
+const createHash = require("../helper/helper").createHash;
+const {BUCKET_NAME} = require("../core/config");
 
-const params = {
-  region: REGION,
-  accessKeyId: AWS_ACCESS_KEY_ID,
-  secretAccessKey: AWS_SECRET_ACCESS_KEY,
-};
-
-const s3Client = new S3Client(params);
+const s3Client = new S3Client();
 
 class PollyService {
   constructor() {
-    this.polly = new PollyClient(params);
+    this.polly = new PollyClient();
   }
 
   /**
@@ -68,12 +57,13 @@ class PollyService {
         const s3Command = new PutObjectCommand(s3Params);
         await s3Client.send(s3Command);
       } catch (error) {
-        if (error.Code) {
-          const errorCode = error.Code;
-          throw S3Exception.handleS3Exception(errorCode);
-        } else {
-          console.error("Erro inesperado:", error);
-        }
+        //if (error.Code) {
+        //  const errorCode = error.Code;
+        //  throw S3Exception.handleS3Exception(errorCode);
+        //} else {
+        //  console.error("Erro inesperado:", error);
+        //}
+        console.error("Erro inesperado:", error);
       }
 
       // Get the URL of the audio file in S3

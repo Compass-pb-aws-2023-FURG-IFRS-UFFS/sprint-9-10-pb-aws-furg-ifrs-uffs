@@ -1,2 +1,39 @@
 service: polly-microservice
 useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  environment:
+    BUCKET_NAME: ${env:BUCKET_NAME}
+  iam:
+    role:
+      name: role-for-equitalk-polly
+      statements:
+        - Effect: Allow
+          Action:
+            - polly:SynthesizeSpeech
+          Resource: "*"
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:GetObjectAttributes
+            - s3:PutObject
+          Resource:
+              - arn:aws:s3:::${env:BUCKET_NAME}/*
+
+functions:
+  polly:
+    handler: handler.handler
+    events:
+      - httpApi:
+          path: /polly
+          method: post
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    host: "127.0.0.1"

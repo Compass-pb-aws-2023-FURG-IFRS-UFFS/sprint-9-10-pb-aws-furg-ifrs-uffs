@@ -8,5 +8,13 @@
   },
   "keywords": [],
   "author": "John Marcel",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "serverless-offline": "^13.2.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-polly": "^3.428.0",
+    "@aws-sdk/client-s3": "^3.428.0",
+    "dotenv": "^16.3.1"
+  }
 }
