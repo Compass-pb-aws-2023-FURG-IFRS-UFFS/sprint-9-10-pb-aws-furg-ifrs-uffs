@@ -3,21 +3,32 @@ from utils import create_response
 
 from services.dynamo import get_all_news
 from services.polly import tts_output_directly_on_s3
+import traceback
 
 def handle_news_intent(event):
     try:
+
+        # take from the input the number of news to be read
+        slots = event['interpretations'][0]['intent']['slots']
+        num_news = int(slots['numeroNoticias']['value']['interpretedValue'])
+
+        print(num_news, type(num_news))
+
         # get formatted news msg
-        news = get_news_fmt()
+        news = get_news_fmt(num_news=num_news)
+
+        print(traceback.print_exc())
 
         return create_response(event, news)
     except Exception as e:
+        print(traceback.print_exc())
         print(str(e))
         return create_response(event, "Ocorreu um erro!")
 
 
-def get_news_fmt() -> str:
+def get_news_fmt(num_news=5) -> str:
     """
-    get and format 5 most recent news from source cc.uffs
+    get and format news from uffs.edu.br
 
     :return: msg
 
@@ -25,16 +36,22 @@ def get_news_fmt() -> str:
     get_news_fmt()
     """
 
+    if num_news <= 0:
+        return 'Número de notícias inválido!'
+
     # scraping from cc.uffs
     news = get_all_news() 
 
     msg = ''
-    for i in range(5):
+
+    for i in range(num_news):
         msg += f'{news[i]["titulo"]}... \n'
         msg += f'Publicada em {news[i]["data"]} \n'
         msg += f'{news[i]["texto"].split("  ler mais...")[0]} \n'
         msg += f'Leia a notícia completa em: {news[i]["link"]} \n'
         msg += f'Ouça a notícia completa em: {news[i]["audio"]} \n\n'
+
+    print(len(msg))
 
     return msg
 
