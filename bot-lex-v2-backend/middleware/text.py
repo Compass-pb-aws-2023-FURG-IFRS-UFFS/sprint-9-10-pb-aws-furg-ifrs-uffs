@@ -6,9 +6,10 @@ import base64
 import requests
 
 from middleware.requests import send_message_telegram, get_file_details_telegram, get_file_telegram
-from controllers.schedule_controller import login, get_schedule_text
+from controllers.schedule_controller import login, get_schedule_text, update_schedule
 from core.config import settings
 from datetime import datetime
+
 
 
 def save_to_bucket(image,bucket=os.environ.get('BUCKET_NAME')):
@@ -37,21 +38,8 @@ def handle_photo_input(chat_id, input):
 def handle_html_input(chat_id, input):
     file_details = get_file_details_telegram(input['file_id'])
     file = get_file_telegram(file_details['file_path'])
-    print(file)
-    file_html = base64.b64encode(file).decode('utf-8')
-    api_url=f'{settings.CC_API_BASE_URL}/dev/schedule/'
-    headers = {
-        'Content-Type': 'text/html; charset=utf-8',
-    }
-    response = requests.post(api_url, headers=headers, data=file.decode('iso-8859-1').encode('utf-8'))
-    if response.status_code == 200:
-        response_data = json.loads(response.text)
-        print(response_data)
-        send_message_telegram(chat_id, 'Foi!')
-    else:
-        response_data = json.loads(response.text)
-        print(response_data)
-        send_message_telegram(chat_id, response_data['Error'])
+    return send_message_telegram(chat_id,update_schedule(file))
+
 
 
 def resolve_user_text(chat_id, user_text):

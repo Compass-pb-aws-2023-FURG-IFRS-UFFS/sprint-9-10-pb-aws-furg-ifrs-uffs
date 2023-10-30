@@ -71,13 +71,6 @@ functions:
   router:
     handler: router.handle_router
 
-  updateSchedule:
-    handler: routes/schedule_route.handler
-    events:
-      - http: 
-          path: /schedule
-          method: post
-          cors: true
     
   telegramToLex:
     handler: middleware/telegramToLex.telegram_handler
