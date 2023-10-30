@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 
+
 def extract_student_id_from_html(html):
     soup = BeautifulSoup(html, 'html.parser')
 

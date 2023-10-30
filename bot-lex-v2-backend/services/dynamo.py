@@ -61,3 +61,32 @@ def get_schedule_from_student(student_id):
     if not student:
         return False
     return student.get('schedule', False)
+
+
+def get_student_from_id(student_id):
+    table = dynamodb.Table(settings.DYNAMO_DB_USERS_TABLE)
+    
+    student = table.get_item(Key = {'id':student_id})
+    
+    return student.get('Item', None)
+
+
+def update_student(student_id, schedule):
+    table = dynamodb.Table(settings.DYNAMO_DB_USERS_TABLE)
+
+    update_expression = "SET #schedule = :newSchedule"
+    expression_attribute_values = {
+        ':newSchedule': schedule
+    }
+    expression_attribute_names = {
+        '#schedule': 'schedule',
+    }
+
+    response = table.update_item(
+        Key={'id': student_id},
+        UpdateExpression=update_expression,
+        ExpressionAttributeValues=expression_attribute_values,
+        ExpressionAttributeNames=expression_attribute_names,
+    )
+
+    return True

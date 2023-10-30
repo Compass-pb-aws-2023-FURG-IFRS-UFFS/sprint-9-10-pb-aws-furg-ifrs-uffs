@@ -71,8 +71,13 @@ functions:
   router:
     handler: router.handle_router
 
-  getScheduleIntent:
-    handler: handlers/get_schedule.handle_get_schedule_intent
+  updateSchedule:
+    handler: routes/schedule_route.handler
+    events:
+      - http: 
+          path: /schedule
+          method: post
+          cors: true
     
   telegramToLex:
     handler: middleware/telegramToLex.telegram_handler
@@ -93,3 +98,8 @@ functions:
 plugins:
   - serverless-offline
   - serverless-python-requirements
+
+package:
+  exclude:
+    - node_modules/**
+    - venv/**
