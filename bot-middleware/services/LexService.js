@@ -25,6 +25,7 @@ class LexService {
    * @throws {Error} - Throws an error if there is a problem sending the message to Lex.
    */
   async sendMessage(message, sessionId) {
+    // Parameters for the RecognizeTextCommand
     const params = {
       botId: BOT_ID,
       botAliasId: BOT_ALIAS_ID,
@@ -32,23 +33,32 @@ class LexService {
       sessionId: sessionId,
       text: message,
     }
+
     const command = new RecognizeTextCommand(params)
+
     try {
+      // Sending the command to Lex service and receiving the response
       const returnLex = await this.lexClient.send(command)
       const intentName = returnLex.sessionState.intent.name
       let response = ""
+
+      // Concatenating chatbot messages into a single response string
       if(returnLex.messages[0]) {
         for(let i = 0; i < returnLex.messages.length; i++) {
           const currentMessage = returnLex.messages[i].content
           response += `${currentMessage}\n\n`
         }
       }
+
+      // Adding a predefined initial message if the intent is "Hello"
       if (intentName === "Hello") response += INITIAL_MESSAGE
+
+      // Handling empty response
       if(response == "") response = "An Error Ocurred"
+
       return response
     } catch (error) {
-      console.error("Unexpected error:", error)
-      return "Unexpected error occurred"
+      throw new Error("Error in Amazon Lex")
     }
   }
 }

@@ -31,10 +31,12 @@ class TwilioService {
       from: TWILIO_DEFAULT_NUMBER,
       to: recipientNumber,
     }
+
     try {
+      // Send the message using Twilio API
       await this.twilioClient.messages.create(params)
     } catch (error) {
-      console.error("Unexpected error:", error)
+      throw new Error("Error occurred while sending the message in Twilio.")
     }
   }
 
@@ -47,6 +49,7 @@ class TwilioService {
    */
   async handleDownload(mediaUrl) {
     try {
+      // Send a GET request to the specified media URL with authentication
       const response = await axios.get(mediaUrl, {
         responseType: "arraybuffer",
         auth: {
@@ -55,11 +58,13 @@ class TwilioService {
         },
       })
 
+      // Convert the response data to base64 encoded string and then to Buffer
       const imageData = Buffer.from(response.data, "binary").toString("base64")
-      return Buffer.from(imageData, "base64")
+      const imageBuffer = Buffer.from(imageData, "base64")
+
+      return imageBuffer
     } catch (error) {
-      console.error("Request error:", error)
-      throw error
+      throw new Error("Error occurred while downloading the image in Twilio.")
     }
   }
 }
