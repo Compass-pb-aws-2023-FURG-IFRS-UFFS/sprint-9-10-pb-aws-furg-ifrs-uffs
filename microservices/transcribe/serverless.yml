@@ -20,11 +20,14 @@ provider:
         - Effect: Allow
           Action:
             - transcribe:StartTranscriptionJob
+            - transcribe:GetTranscriptionJob
+            - transcribe:GetCallAnalyticsJob
           Resource: "*"
 
 functions:
   getTranscription:
     handler: handler.getTranscription
+    timeout: 200
     events:
       - httpApi:
           path: /transcribe

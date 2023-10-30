@@ -1,11 +1,10 @@
 const {
   TranscribeClient,
   StartTranscriptionJobCommand,
+  GetTranscriptionJobCommand
 } = require("@aws-sdk/client-transcribe");
-const Settings = require("../core/config.js");
-const BUCKET_NAME = Settings.BUCKET_NAME;
-const { createHash } = require("../helper/helper.js");
-const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { BUCKET_NAME } = require("../core/config");
+const { createHash, getTranscriptionJob } = require("../helper/helper.js");
 
 class TranscribeService {
   constructor() {
@@ -13,48 +12,50 @@ class TranscribeService {
   }
 
   async transcribeMessage(audioFile) {
-    const transcribeParams = {
-      TranscriptionJobName: createHash(audioFile), // tratar quando passar o mesmo audiofile e erros
-      LanguageCode: "pt-BR",
-      MediaFormat: "ogg",
-      Media: {
-        MediaFileUri: audioFile,
-      },
-      OutputBucketName: BUCKET_NAME,
-    };
-    
     try {
-      const command = new StartTranscriptionJobCommand(transcribeParams);
-      const response = await this.transcribeClient.send(command);
-      console.log("Success - put", response);
-      console.log("Waiting for transcription to complete...");
-      console.log("bucketkey" + JSON.stringify(response.TranscriptionJob.TranscriptionJobName));
-      
-      const s3Params = {
-        Bucket: BUCKET_NAME,
-        Key: `${JSON.stringify(response.TranscriptionJob.TranscriptionJobName).replace(/^"(.*)"$/, '$1')}.json`,
+      const min = 1;
+      const max = 100;
+      const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+      const jobName = createHash(audioFile) + randomNumber;
+      // Iniciar o trabalho de transcrição
+      // Esperar até que o trabalho de transcrição esteja completo
+      const startTranscriptionParams = {
+        TranscriptionJobName: jobName,
+        LanguageCode: "pt-BR", // Código do idioma do áudio
+        MediaFormat: "ogg",
+        Media: { MediaFileUri: audioFile },
+        OutputBucketName: BUCKET_NAME,
       };
-      console.log(`s3Params: ${JSON.stringify(s3Params)}`);
-
-      const s3Client = new S3Client();
-      const s3Command = new GetObjectCommand(s3Params);
-      const s3Response = await s3Client.send(s3Command);
-      console.log("Success - get", s3Response);
-
-      return s3Response;
-    } catch (err) {
-      console.log("Error to transcribe a message in Amazon Transcribe", err);
-      throw new Error("Error in Amazon Transcribe");
+      const command = new StartTranscriptionJobCommand(startTranscriptionParams);
+      const data = await this.transcribeClient.send(command);
+      while (true) {
+        const getTranscriptionJobParams = {
+            TranscriptionJobName: data.TranscriptionJob.TranscriptionJobName,
+        };
+        const getTranscriptionJobCommand = new GetTranscriptionJobCommand(getTranscriptionJobParams);
+        const dataTranscription = await this.transcribeClient.send(getTranscriptionJobCommand);
+        const transcriptionJobStatus = dataTranscription.TranscriptionJob.TranscriptionJobStatus;
+        if (transcriptionJobStatus === "COMPLETED") {
+          //  if(teste == 1){
+          console.log("entrei na conclusão");
+          const response = await getTranscriptionJob(
+            dataTranscription.TranscriptionJob.Transcript.TranscriptFileUri
+          );
+          return response;        
+        } else if (
+          transcriptionJobStatus === "FAILED" ||
+          transcriptionJobStatus === "CANCELED"
+        ) {
+          const response = "O trabalho de transcrição falhou ou foi cancelado.";
+          return response; 
+        } else {
+          console.log("Ainda em andamento. Status:", transcriptionJobStatus);
+          await new Promise((resolve) => setTimeout(resolve, 5000)); // Aguarde 5 segundos antes de verificar novamente
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao iniciar o trabalho de transcrição:", error);
     }
   }
 }
-
-// (async() => {
-//   const URI = "s3://equitalk-bucket/e6ac9de5a350cd42ca799dfda6af338626a350b030d9ac4afb3ae385406aca18.mp3"
-//   const resp = await new TranscribeService().transcribeMessage(URI)
-//   console.log("executou");
-//   console.log(resp)
-//   // console.log(BUCKET_NAME);
-// })()
-
 module.exports = TranscribeService;
