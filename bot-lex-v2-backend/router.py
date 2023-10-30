@@ -4,7 +4,7 @@ from handlers.contact_us import contact_us
 from handlers.contact import contact
 from handlers.documents import documents
 from handlers.news import news
-#from handlers.schedule import schedule
+from handlers.ru_menu import ru_menu
 
 def handle_router(event, context):
     intent_name = event['sessionState']['intent']['name']
@@ -14,8 +14,7 @@ def handle_router(event, context):
         "GetContactIntent": contact,
         "GetDocumentsIntent": documents,
         "GetNewsIntent": news,
-        # "GetRUMenu": ru_menu,
-        # "ScheduleIntent": schedule,
+        "GetRUMenu": ru_menu,
     }
     
     if intent_name in intent_handlers:

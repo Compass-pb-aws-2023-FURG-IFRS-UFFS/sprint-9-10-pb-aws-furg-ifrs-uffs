@@ -44,3 +44,7 @@ def parse_event_body(event, required_params=None):
                 raise Exception(f"Invalid input: Missing {required_param} param")
     
     return body
+
+
+def date_to_weekday_ymd(date):
+  return datetime.strptime(date, '%Y-%m-%d').weekday()
