@@ -56,7 +56,7 @@ def get_news_fmt(num_news=5) -> str:
     return msg
 
 
-def get_news_audio_url(news_text: str, news_id: int) -> str:
+def get_news_audio_url(news_text: str, news_id: str) -> str:
     """
     get news content (body) and returns a s3 link with the tts
 
@@ -70,7 +70,6 @@ def get_news_audio_url(news_text: str, news_id: int) -> str:
 
     bucket_name = settings.NEWS_BUCKET_NAME
     key = settings.NEWS_FOLDER_NAME + f'{news_id}'
-
     # tts with polly
     audio_url = tts_output_directly_on_s3(news_text, bucket_name, key)
     

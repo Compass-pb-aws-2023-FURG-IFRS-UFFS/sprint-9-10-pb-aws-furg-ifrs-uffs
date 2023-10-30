@@ -26,9 +26,9 @@ provider:
     
     SNS_TOPIC_ARN: ${ssm:uffs-bot-developers-topic-arn}
 
-    NEWS_BUCKET_NAME: ${env:NEWS_BUCKET_NAME}
+    NEWS_BUCKET_NAME: ${ssm:uffs-bot-news-bucket-name}
     NEWS_FOLDER_NAME: ${env:NEWS_FOLDER_NAME}
-    NEWS_TABLE_NAME: ${env:NEWS_TABLE_NAME}
+    NEWS_TABLE_NAME: ${ssm:uffs-bot-news-table-name}
     
   iam:
     role:
@@ -68,16 +68,12 @@ provider:
           Resource: ${env:TELEGRAM_ARN}
 
 functions:
-  router:
-    handler: router.handle_router
 
-  updateSchedule:
-    handler: routes/schedule_route.handler
-    events:
-      - http: 
-          path: /schedule
-          method: post
-          cors: true
+  storeNews:
+    handler: handlers/news.store_news
+    events: 
+      - schedule: rate(10 hours)
+
     
   telegramToLex:
     handler: middleware/telegramToLex.telegram_handler

@@ -1,10 +1,11 @@
 import boto3
-
+import traceback
 from core.config import settings
+from utils import create_hash
 dynamodb = boto3.resource('dynamodb')
 
 
-def put_news(data: dict) -> bool:
+def put_news(news: dict) -> bool:
     """
     save news on dynamo
 
@@ -17,23 +18,54 @@ def put_news(data: dict) -> bool:
     try:
         table = dynamodb.Table(settings.NEWS_TABLE_NAME)
         
-        for news in data['noticias']:
-            response = table.put_item(
-                Item={
-                    'id': news['id'],
-                    'titulo': news['titulo'],
-                    'tag': news['tag'],
-                    'data': news['data'],
-                    'texto': news['texto'],
-                    'link': news['link'],
-                    'audio': news['audio']
-                }
-            )
+        response = table.put_item(
+            Item={
+                'id': create_hash(news['titulo'] + news['texto_completo']),
+                'titulo': news['titulo'],
+                'tag': news['tag'],
+                'data_post': news['data'],
+                'texto': news['texto'],
+                'link': news['link'],
+                'audio': news['audio'],
+                'texto_completo': news['texto_completo']
+            }
+        )
         return True
     except Exception as e:
+        traceback.print_exc()
         print(str(e))
         return False
 
+def update_news(news: dict) -> bool:
+    """
+    Update news data in DynamoDB
+
+    :param news: Python dict containing news data
+    :return: True if the update is successful, False otherwise
+    """
+    dynamodb = boto3.resource('dynamodb')
+
+    try:
+        table = dynamodb.Table(settings.NEWS_TABLE_NAME)
+
+        response = table.update_item(
+            Key={'id': create_hash(news['titulo'] + news['texto_completo'])},
+            UpdateExpression="set titulo = :t, tag = :tg, data_post = :d, texto = :txt, link = :l, audio = :a, texto_completo = :tc",
+            ExpressionAttributeValues={
+                ':t': news['titulo'],
+                ':tg': news['tag'],
+                ':d': news['data'],
+                ':txt': news['texto'],
+                ':l': news['link'],
+                ':a': news['audio'],
+                ':tc': news['texto_completo']
+            }
+        )
+        return True
+    except Exception as e:
+        traceback.print_exc()
+        print(str(e))
+        return False
 
 def get_all_news() -> dict:
     """
@@ -50,6 +82,13 @@ def get_all_news() -> dict:
     response['Items'].sort(key=lambda x: int(x['id']))
 
     return response['Items']
+
+def get_news_by_id(id):
+    table = dynamodb.Table(settings.NEWS_TABLE_NAME)
+    
+    news = table.get_item(Key = {'id':id})
+    
+    return news.get('Item', None)
 
 
 def get_schedule_from_student(student_id):

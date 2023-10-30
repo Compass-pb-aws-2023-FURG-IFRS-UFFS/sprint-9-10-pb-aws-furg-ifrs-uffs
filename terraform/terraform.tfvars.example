@@ -1,6 +1,6 @@
 sns_topic_name = "topic name"
 subscriptions = ["email1@gmail.com", "email2.pb@compasso.com.br"]
-bucket_lost_and_found_name = "name_bucket"
-db_table_lost_and_found_name = "name_table"
+auth_bucket = "name_bucket"
 db_table_news_name = "name_table"
-db_table_intents_data_name = "name_table"
+db_table_cc_bot_users = "name_table"
+news_bucket = "name_bucket"
