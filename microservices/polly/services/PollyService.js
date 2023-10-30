@@ -48,7 +48,7 @@ class PollyService {
 
       const s3Params = {
         Bucket: BUCKET_NAME,
-        Key: "audio_" + createHash(text) + ".ogg",
+        Key: "audio_" + createHash(text) + ".mp3",
         Body: audio,
       };
 
