@@ -1,7 +1,13 @@
 import json
 import pytz
 from datetime import datetime
+import hashlib
 
+
+def create_hash(text):
+    text_hash = hashlib.sha256()
+    text_hash.update(text.encode('utf-8'))
+    return text_hash.hexdigest()
 
 def create_response(event, msgText):
   response = {

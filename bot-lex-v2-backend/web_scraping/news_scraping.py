@@ -60,9 +60,9 @@ def scrap_full_news_by_url(url: str) -> dict:
     news_body_content = soup.find_all('div', class_='post-content mt-5')[0]
         
     news_dict = {'text': ''}
-    
     # mounts news body content dict
     for paragraph in news_body_content:
-        news_dict['text'] += paragraph.text.strip().replace('\n', ' ')
-        
+        if (paragraph is None) or paragraph == '\n':
+            continue
+        news_dict['text'] += paragraph.text.strip().replace('\n', '. ')
     return news_dict

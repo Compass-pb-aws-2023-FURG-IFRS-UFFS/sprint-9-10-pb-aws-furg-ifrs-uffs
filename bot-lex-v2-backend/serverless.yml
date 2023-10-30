@@ -68,8 +68,11 @@ provider:
           Resource: ${env:TELEGRAM_ARN}
 
 functions:
-  router:
-    handler: router.handle_router
+
+  storeNews:
+    handler: handlers/news.store_news
+    events: 
+      - schedule: rate(10 hours)
 
     
   telegramToLex:
