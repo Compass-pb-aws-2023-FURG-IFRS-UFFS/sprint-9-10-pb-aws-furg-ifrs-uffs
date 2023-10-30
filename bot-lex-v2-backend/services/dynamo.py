@@ -6,18 +6,17 @@ dynamodb = boto3.resource('dynamodb')
 
 def put_news(data: dict) -> bool:
     """
-    Salva as notícias no DynamoDB
+    save news on dynamo
 
-    :param data: json contendo array de notícias
-    :return: True se as notícias foram salvas, False caso contrário
+    :param data: python dict
+    :return: true if dynamo persists news info. false otherwise
 
-    Exemplo de uso:
+    usage example:
     put_news(data)
     """
     try:
-        table = dynamodb.Table(settings.NEWS_TABLE_NAME) # Instancia a tabela
+        table = dynamodb.Table(settings.NEWS_TABLE_NAME)
         
-        # Salva as notícias no DynamoDB
         for news in data['noticias']:
             response = table.put_item(
                 Item={
@@ -32,22 +31,33 @@ def put_news(data: dict) -> bool:
             )
         return True
     except Exception as e:
-        print(str(e)) # Printa o erro no CloudWatch
+        print(str(e))
         return False
 
 
 def get_all_news() -> dict:
     """
-    Retorna todas as notícias do site do curso de Ciência da Computação
+    returns all news from cc.uffs as dict
 
-    :return: Dicionário com as notícias
+    :return: news dict
 
-    Exemplo de uso:
+    usage example
     get_all_news()
     """
-    table = dynamodb.Table(settings.NEWS_TABLE_NAME) # Instancia a tabela
+    table = dynamodb.Table(settings.NEWS_TABLE_NAME)
 
-    response = table.scan() # Faz a consulta na tabela
+    response = table.scan()
+    response['Items'].sort(key=lambda x: int(x['id']))
 
-    response['Items'].sort(key=lambda x: int(x['id'])) # Ordena as notícias pelo id
     return response['Items']
+
+
+def get_schedule_from_student(student_id):
+    table = dynamodb.Table(settings.DYNAMO_DB_USERS_TABLE)
+
+    student = table.get_item(Key = {'id':student_id})
+    student =  student.get('Item', {})
+    
+    if not student:
+        return False
+    return student.get('schedule', False)

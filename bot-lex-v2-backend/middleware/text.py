@@ -1,13 +1,16 @@
-import boto3
-import json
 import os
 import gzip
+import json
+import boto3
 import base64
-from middleware.requests import *
 import requests
+
+from middleware.requests import send_message_telegram, get_file_details_telegram, get_file_telegram
+from controllers.schedule_controller import login, get_schedule_text
 from core.config import settings
 from datetime import datetime
-from handlers.get_schedule import login, get_schedule_text
+
+
 def save_to_bucket(image,bucket=os.environ.get('BUCKET_NAME')):
     s3 = boto3.client('s3')
     object_key = f'users/{datetime.now().strftime("%d-%m-%y %H:%M:%S")}.jpeg'
@@ -28,8 +31,7 @@ def handle_photo_input(chat_id, input):
     payload = json.load(invoke_response['Payload'])
     body = json.loads(payload['body'])
     message = body.get('message', 'Algo deu errado ao cadastrar usuário')
-    send_message_telegram(chat_id, str(message))
-    
+    send_message_telegram(chat_id, str(message))    
 
 
 def handle_html_input(chat_id, input):
@@ -101,6 +103,3 @@ def resolve_user_text(chat_id, user_text):
         send_message_telegram(chat_id, text)
 
     return {"body" : json.dumps({}),"statusCode": 200}
-
-
-

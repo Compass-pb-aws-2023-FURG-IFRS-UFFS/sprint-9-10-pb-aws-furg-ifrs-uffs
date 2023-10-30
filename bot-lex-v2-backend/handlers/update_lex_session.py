@@ -1,7 +1,9 @@
 from services.lex_service import update_session_state
 import json
 from middleware.requests import send_message_telegram
-from handlers.get_schedule import get_schedule_text
+from controllers.schedule_controller import get_schedule_text
+
+
 def handler(event, request):
     print(event)
     body = json.loads(event['body'])
