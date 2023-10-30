@@ -17,7 +17,7 @@ const handleIntent = async (event, context) => {
     if (NumMedia !== "0") {
       const type = MediaContentType0.split("/")[0]
       if (type === MEDIA_TYPES.AUDIO || type === MEDIA_TYPES.IMAGE) {
-        const extension = type === MEDIA_TYPES.AUDIO ? "ogg" : "jpeg"
+        const extension = type === MEDIA_TYPES.AUDIO ? "mp3" : "jpeg"
         const mediaBody = await new TwilioService().handleDownload(MediaUrl0)
         const bucketKey = await new S3Service().saveToS3(mediaBody, extension)
         const messageParams = {

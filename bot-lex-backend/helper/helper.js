@@ -22,9 +22,13 @@ function prepareResponse(event, msgText) {
   return response
 }
 const isAudio = (dataString) => {
-  return /^media=[a-z]{5}&extension=(mp3)&bucketKey=[a-z\d]+\.(mp3){1}$/.test(dataString);
-};
+  return /^media=[a-z]{5}&extension=(mp3)&bucketKey=[a-z\d]+\.(mp3){1}$/.test(dataString)
+}
 const isImage = (dataString) => {
-  return /^media=[a-z]{5}&extension=(jpeg)&bucketKey=[a-z\d]+\.(jpeg){1}$/.test(dataString);
-};
-module.exports = { prepareResponse, isAudio, isImage }
+  return /^media=[a-z]{5}&extension=(jpeg)&bucketKey=[a-z\d]+\.(jpeg){1}$/.test(dataString)
+}
+
+const isFormData = (dataString) => {
+  return /^media=[a-z]{0,}&extension=[a-z]{0,}&bucketKey=[a-z\d]+\.[a-z]{0,}$/.test(dataString)
+}
+module.exports = { prepareResponse, isAudio, isImage,isFormData }
