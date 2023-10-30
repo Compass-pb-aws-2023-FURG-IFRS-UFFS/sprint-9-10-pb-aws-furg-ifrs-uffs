@@ -56,8 +56,9 @@ function FaceLiveness({ faceLivenessAnalysis }) {
 
       const data = await response.json();
       faceLivenessAnalysis(data);
+      const path = "/result" + "?id="+chatId
 
-      navigate("/result", { state: { data: data } });
+      navigate(path, { state: { data: data } });
     } catch (error) {
       console.error("Error na análise de resultados:", error);
     }
