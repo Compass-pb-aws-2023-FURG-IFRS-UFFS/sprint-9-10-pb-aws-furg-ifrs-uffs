@@ -1,7 +1,9 @@
 import boto3
-import traceback
 from core.config import settings
 from utils import create_hash
+import datetime
+
+
 dynamodb = boto3.resource('dynamodb')
 
 
@@ -32,9 +34,9 @@ def put_news(news: dict) -> bool:
         )
         return True
     except Exception as e:
-        traceback.print_exc()
         print(str(e))
         return False
+
 
 def update_news(news: dict) -> bool:
     """
@@ -63,9 +65,9 @@ def update_news(news: dict) -> bool:
         )
         return True
     except Exception as e:
-        traceback.print_exc()
         print(str(e))
         return False
+
 
 def get_all_news() -> dict:
     """
@@ -79,9 +81,10 @@ def get_all_news() -> dict:
     table = dynamodb.Table(settings.NEWS_TABLE_NAME)
 
     response = table.scan()
-    response['Items'].sort(key=lambda x: int(x['id']))
+    response['Items'].sort(key=lambda x: datetime.datetime.strptime(x['data_post'], '%d-%m-%Y'), reverse=True)
 
     return response['Items']
+
 
 def get_news_by_id(id):
     table = dynamodb.Table(settings.NEWS_TABLE_NAME)
