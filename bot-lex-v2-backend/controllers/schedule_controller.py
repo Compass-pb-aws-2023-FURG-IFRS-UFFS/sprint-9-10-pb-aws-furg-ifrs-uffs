@@ -1,5 +1,5 @@
-import json 
-import boto3
+import json
+from services.dynamo import get_schedule_from_student 
 import requests
 
 from core.config import settings
