@@ -1,5 +1,13 @@
 const transcribeService = require("./services/TranscribeService");
 
+/**
+ * AWS Lambda function for transcribing audio using TranscribeService.
+ *
+ * @param {object} event - The Lambda event object.
+ * @param {object} context - The Lambda context object.
+ * @param {function} callback - The callback function.
+ * @returns {Promise<object>} - A Promise representing the Lambda response.
+ */
 async function getTranscription(event, context, callback) {
   const audio = JSON.parse(event.body).body;
   try {

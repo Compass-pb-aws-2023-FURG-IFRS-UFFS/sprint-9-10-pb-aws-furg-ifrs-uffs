@@ -30,4 +30,3 @@ const imageToText = async (message) => {
   }
 }
 module.exports = { imageToText }
-

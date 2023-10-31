@@ -5,7 +5,7 @@ const axios = require("axios");
  * Creates a SHA256 hash of a string. Used to verify passwords before they are sent to the server
  *
  * @param {string} str - The string to be hashed
- * @return { string } The hash as a hex string of
+ * @return { string } - The hash as a hex string of
  */
 function createHash(str) {
   const hash = crypto.createHash("sha256");
@@ -14,37 +14,11 @@ function createHash(str) {
 }
 
 /**
- * Generates an HTTP response object with the specified status code and message.
+ * Fetches a transcription job from a given URL and returns the transcript.
  *
- * @param {number} statusCode - The HTTP status code of the response.
- * @param {string} message - The message to be included in the response body.
- * @returns {Object} - An HTTP response object.
+ * @param {string} url - The URL to fetch the transcription job data.
+ * @returns {Promise<string>} - A Promise that resolves to the transcript.
  */
-function handleResponse(statusCode, message) {
-   /**
-   * HTTP response object.
-   * @typedef {Object} HttpResponse
-   * @property {number} statusCode - The HTTP status code.
-   * @property {Object} headers - The headers for the response.
-   * @property {string} headers.Access-Control-Allow-Origin - CORS header allowing any origin.
-   * @property {string} headers.Content-Type - Content type header set to application/json.
-   * @property {string} body - The response body in JSON format.
-   */
-
-  /**
-   * @type {HttpResponse}
-   */
-  return {
-    statusCode: statusCode,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ body: message }),
-  };
-}
-
-
 async function getTranscriptionJob(url) {
   let transcript = "";
 
@@ -61,4 +35,4 @@ await axios
   return transcript;
 }
 
-module.exports = { handleResponse, createHash, getTranscriptionJob };
+module.exports = { createHash, getTranscriptionJob };

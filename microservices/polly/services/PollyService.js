@@ -2,8 +2,6 @@ const {
   PollyClient,
   SynthesizeSpeechCommand,
 } = require("@aws-sdk/client-polly");
-//const S3Exception = require("../../../bot-middleware/exceptions/aws-exceptions/S3Exception");
-//const PollyException = require("../../../bot-middleware/exceptions/aws-exceptions/PollyException");
 const { S3Client, PutObjectCommand, S3 } = require("@aws-sdk/client-s3");
 const createHash = require("../helper/helper").createHash;
 const {BUCKET_NAME} = require("../core/config");
@@ -20,7 +18,7 @@ class PollyService {
    *
    * @param text - The text to synthesize.
    *
-   * @return {string} The URL of the audio file in S3. If an error occurs, returns null.
+   * @return {string} - The URL of the audio file in S3. If an error occurs, returns null.
    */
   async textToSpeech(text) {
     const speechParams = {
@@ -57,12 +55,6 @@ class PollyService {
         const s3Command = new PutObjectCommand(s3Params);
         await s3Client.send(s3Command);
       } catch (error) {
-        //if (error.Code) {
-        //  const errorCode = error.Code;
-        //  throw S3Exception.handleS3Exception(errorCode);
-        //} else {
-        //  console.error("Erro inesperado:", error);
-        //}
         console.error("Erro inesperado:", error);
       }
 

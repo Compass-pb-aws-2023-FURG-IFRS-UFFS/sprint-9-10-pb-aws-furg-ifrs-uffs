@@ -12,7 +12,13 @@ function createHash(str) {
   hash.update(str);
   return hash.digest("hex");
 }
-
+/**
+ * Generates a response object with the specified status code and message.
+ *
+ * @param {number} statusCode - The HTTP status code for the response.
+ * @param {string} message - The message to include in the response.
+ * @returns {object} An object containing the response data.
+ */
 function handleResponse(statusCode, message) {
   return {
     statusCode: statusCode,

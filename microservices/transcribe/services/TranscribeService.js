@@ -6,22 +6,30 @@ const {
 const { BUCKET_NAME } = require("../core/config");
 const { createHash, getTranscriptionJob } = require("../helper/helper.js");
 
+/**
+ * Service for transcribing audio files using AWS Transcribe.
+ */
 class TranscribeService {
   constructor() {
     this.transcribeClient = new TranscribeClient();
   }
 
+  /**
+   * Transcribes an audio file and returns the transcription text.
+   *
+   * @param {string} audioFile - The URI of the audio file to transcribe.
+   * @returns {Promise<string>} - A Promise that resolves to the transcription text.
+   */
   async transcribeMessage(audioFile) {
     try {
       const min = 1;
       const max = 100;
       const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
       const jobName = createHash(audioFile) + randomNumber;
-      // Iniciar o trabalho de transcrição
-      // Esperar até que o trabalho de transcrição esteja completo
+
       const startTranscriptionParams = {
         TranscriptionJobName: jobName,
-        LanguageCode: "pt-BR", // Código do idioma do áudio
+        LanguageCode: "pt-BR",
         MediaFormat: "ogg",
         Media: { MediaFileUri: audioFile },
         OutputBucketName: BUCKET_NAME,
@@ -35,9 +43,8 @@ class TranscribeService {
         const getTranscriptionJobCommand = new GetTranscriptionJobCommand(getTranscriptionJobParams);
         const dataTranscription = await this.transcribeClient.send(getTranscriptionJobCommand);
         const transcriptionJobStatus = dataTranscription.TranscriptionJob.TranscriptionJobStatus;
+
         if (transcriptionJobStatus === "COMPLETED") {
-          //  if(teste == 1){
-          console.log("entrei na conclusão");
           const response = await getTranscriptionJob(
             dataTranscription.TranscriptionJob.Transcript.TranscriptFileUri
           );
@@ -50,7 +57,7 @@ class TranscribeService {
           return response; 
         } else {
           console.log("Ainda em andamento. Status:", transcriptionJobStatus);
-          await new Promise((resolve) => setTimeout(resolve, 5000)); // Aguarde 5 segundos antes de verificar novamente
+          await new Promise((resolve) => setTimeout(resolve, 5000));
         }
       }
     } catch (error) {
