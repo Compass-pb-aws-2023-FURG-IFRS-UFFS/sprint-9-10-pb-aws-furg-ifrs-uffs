@@ -56,7 +56,6 @@ const isImage = (dataString) => {
  * @returns {boolean} - True if the string represents form data, false otherwise.
  */
 const isFormData = (dataString) => {
-  return /^media=[a-z]{0,}&extension=[a-z]{0,}&bucketKey=[a-z\d]+\.[a-z]{0,}$/.test(dataString)
+  return /^media=[a-zA-Z\d]{0,}&extension=[a-zA-Z\d]{0,}&bucketKey=[a-zA-Z\d]+\.[a-zA-Z\d]{0,}$/.test(dataString)
 }
-
 module.exports = { prepareResponse, isAudio, isImage,isFormData }
