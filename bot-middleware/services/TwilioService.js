@@ -41,6 +41,28 @@ class TwilioService {
   }
 
   /**
+   * Sends an audio to a specific phone number.
+   *
+   * @param {string} mediaUrl - The mediaUrl of the message.
+   * @param {string} recipientNumber - The phone number to send the message to.
+   * @returns {Promise<string>} - A success message or an error message.
+   */
+  async sendAudio(url, recipientNumber) {
+    const params = {
+      mediaUrl: [url],
+      from: TWILIO_DEFAULT_NUMBER,
+      to: recipientNumber,
+    }
+
+    try {
+      // Send the message using Twilio API
+      await this.twilioClient.messages.create(params)
+    } catch (error) {
+      throw new Error("Error occurred while sending the message in Twilio.")
+    }
+  }
+
+  /**
    * Handles downloading media from a given URL.
    *
    * @param {string} mediaUrl - The URL of the media to be downloaded.

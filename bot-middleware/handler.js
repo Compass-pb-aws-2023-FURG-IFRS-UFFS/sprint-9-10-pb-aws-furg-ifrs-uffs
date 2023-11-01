@@ -1,7 +1,7 @@
 const LexService = require("./services/LexService")
 const TwilioService = require("./services/TwilioService")
 const S3Service = require("./services/S3Service")
-const { handleResponse } = require("./helper/helper")
+const { handleResponse, containAudio } = require("./helper/helper")
 
 /**
  * Enumerates different media types.
@@ -44,10 +44,20 @@ const handleIntent = async (event, context) => {
       }
     }
     // Send the message to Lex service and receive a response
-    const messageToUser = await new LexService().sendMessage(messageToLex, sessionId)
-    
+    let messageToUser = await new LexService().sendMessage(messageToLex, sessionId)
+    const twilioService = new TwilioService()
+    const audio = containAudio(messageToUser)
+
+    // If there's an audio in the response remove it
+    messageToUser = messageToUser.replace(audio[0], "").trim()
+
     // Send the response to the user via Twilio
-    await new TwilioService().sendMessage(messageToUser, recipientNumber)
+    await twilioService.sendMessage(messageToUser, recipientNumber)
+
+    // If has an audio in the respose send it to via Twilio
+    if (audio) {
+      await twilioService.sendAudio(audio[0], recipientNumber)
+    }
 
     return handleResponse(200, messageToUser)
   } catch (error) {
