@@ -5,6 +5,7 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: us-east-1
+  timeout: 30
   environment:
     BUCKET_NAME: ${env:BUCKET_NAME}
   iam:
@@ -14,6 +15,8 @@ provider:
         - Effect: Allow
           Action:
             - polly:SynthesizeSpeech
+            - polly:StartSpeechSynthesisTask
+            - polly:GetSpeechSynthesisTask
           Resource: "*"
         - Effect: Allow
           Action:

@@ -1,12 +1,9 @@
 const {
   PollyClient,
-  SynthesizeSpeechCommand,
+  StartSpeechSynthesisTaskCommand,
+  GetSpeechSynthesisTaskCommand,
 } = require("@aws-sdk/client-polly");
-const { S3Client, PutObjectCommand, S3 } = require("@aws-sdk/client-s3");
-const createHash = require("../helper/helper").createHash;
-const {BUCKET_NAME} = require("../core/config");
-
-const s3Client = new S3Client();
+const { BUCKET_NAME } = require("../core/config");
 
 class PollyService {
   constructor() {
@@ -23,61 +20,41 @@ class PollyService {
   async textToSpeech(text) {
     const speechParams = {
       Text: text,
-      OutputFormat: "ogg_vorbis",
+      TextType: "text",
+      OutputFormat: "mp3",
       VoiceId: "Camila",
       LanguageCode: "pt-BR",
+      OutputS3BucketName: BUCKET_NAME,
     };
 
     try {
-      const command = new SynthesizeSpeechCommand(speechParams);
+      const command = new StartSpeechSynthesisTaskCommand(speechParams);
       const data = await this.polly.send(command);
-
-      // Appends chunks of audio to the end of the request. This is called when data. AudioStream. on ('data') is called
-      const audioChunks = [];
-      data.AudioStream.on("data", (chunk) => {
-        audioChunks.push(chunk);
-      });
-      await new Promise((resolve, reject) => {
-        data.AudioStream.on("end", resolve);
-        data.AudioStream.on("error", reject);
-      });
-
-      const audio = Buffer.concat(audioChunks);
-
-      const s3Params = {
-        Bucket: BUCKET_NAME,
-        Key: "audio_" + createHash(text) + ".mp3",
-        Body: audio,
-      };
-
-      // Uploads the audio to S3
-      try {
-        const s3Command = new PutObjectCommand(s3Params);
-        await s3Client.send(s3Command);
-      } catch (error) {
-        console.error("Erro inesperado:", error);
+      const taskId = data.SynthesisTask.TaskId;
+      console.log("Task ID:", taskId);
+      while (true) {
+        const getSpeechSynthesisTaskParams = {
+          TaskId: taskId,
+        };
+        const getSpeechSynthesisTaskCommand = new GetSpeechSynthesisTaskCommand(
+          getSpeechSynthesisTaskParams
+        );
+        const dataTask = await this.polly.send(getSpeechSynthesisTaskCommand);
+        const taskStatus = dataTask.SynthesisTask.TaskStatus;
+        if (taskStatus === "completed") {
+          const url = dataTask.SynthesisTask.OutputUri;
+          return url;
+        } else if (taskStatus === "failed") {
+          const response = "O trabalho de transcrição falhou ou foi cancelado.";
+          return response;
+        } else {
+          console.log("Ainda em andamento. Status:", taskStatus);
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
       }
-
-      // Get the URL of the audio file in S3
-      const urlParams = {
-        Bucket: BUCKET_NAME,
-        Key: s3Params.Key,
-        Expires: 3600, // URL expires in 1 hour
-      };
-
-      // Returns URL to S3 bucket with parameters set in params.
-      const url =
-        "https://" + BUCKET_NAME + ".s3.amazonaws.com/" + s3Params.Key;
-
-      return url;
     } catch (error) {
-      if (error.Code) {
-        const errorCode = error.Code;
-        throw PollyException.handlePollyException(errorCode);
-      } else {
-        console.error("Erro inesperado:", error);
-        return "Erro inesperado";
-      }
+      console.error("Erro inesperado:", error);
+      return "Erro inesperado";
     }
   }
 }
