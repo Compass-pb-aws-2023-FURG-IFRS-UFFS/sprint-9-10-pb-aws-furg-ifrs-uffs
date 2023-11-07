@@ -29,7 +29,7 @@ provider:
     NEWS_BUCKET_NAME: ${ssm:uffs-bot-news-bucket-name}
     NEWS_FOLDER_NAME: ${env:NEWS_FOLDER_NAME}
     NEWS_TABLE_NAME: ${ssm:uffs-bot-news-table-name}
-    
+
   iam:
     role:
       name: role-for-middleware-lambda-lex-bot
@@ -42,6 +42,13 @@ provider:
             - arn:aws:s3:::${self:provider.environment.BUCKET_NAME}/*
         - Effect: Allow
           Action:
+            - s3:GetObject
+            - s3:PutObject
+            - s3:DeleteObject
+          Resource:
+            - arn:aws:s3:::${self:provider.environment.NEWS_BUCKET_NAME}/*
+        - Effect: Allow
+          Action:
             - dynamodb:PutItem
             - dynamodb:GetItem
             - dynamodb:UpdateItem
@@ -49,6 +56,9 @@ provider:
             - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.DYNAMO_DB_USERS_TABLE}
         - Effect: Allow
           Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
             - dynamodb:Scan
           Resource:
             - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.NEWS_TABLE_NAME}
@@ -59,7 +69,9 @@ provider:
           Action: sns:Publish
           Resource: ${self:provider.environment.SNS_TOPIC_ARN}
         - Effect: Allow
-          Action: lex:*
+          Action: 
+            - lex:*
+            - transcribe:*
           Resource: '*'
         - Effect: Allow
           Action:
@@ -80,6 +92,7 @@ functions:
     
   telegramToLex:
     handler: middleware/telegramToLex.telegram_handler
+    timeout: 30
     events:
       - http:
           path: telegram-webhook

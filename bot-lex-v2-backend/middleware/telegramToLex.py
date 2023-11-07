@@ -4,6 +4,7 @@ import traceback
 from utils import parse_event_body
 from middleware.requests import send_message_telegram
 from middleware.text import *
+from middleware.audio import handle_audio
 
 def telegram_handler(event, context):
 
@@ -18,6 +19,12 @@ def telegram_handler(event, context):
             handle_html_input(chat_id, message.get('document'))
         elif message.get('photo'):
             handle_photo_input(chat_id, message.get('photo'))
+        elif message.get('voice'):
+            transcribe_text = handle_audio(chat_id, message['voice'].get('file_id'))
+            if transcribe_text:
+                resolve_user_text(chat_id, transcribe_text.replace('.',' '))
+            else:
+                send_message_telegram(chat_id,"Não entendi o que você falou, envie novamente por favor.")
         else:
             send_message_telegram(chat_id, "Perdão, eu ainda não tenho a capacidade para responder o que você escreveu.")
 
