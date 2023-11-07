@@ -20,7 +20,12 @@
 
 - [1 - Descrição do Projeto](#desc)
 - [2 - Funcionalidades](#func)
-- [3 - Arquitetura Preliminar da AWS](#apaws)
+- [3 - Desenvolvimento do Projeto](#desproj)
+- [4 - Utilização do Bot](#utliz)
+- [5 - Estrutura de Pastas do Projeto](#estrpast)
+- [6 - Dificuldades Conhecidas](#dific)
+- [7 - Arquitetura AWS](#aaws)
+
 
 <a id="desc"></a>
 
@@ -54,8 +59,128 @@ Precisa saber os dias ou horários das aulas, e os professores ministrantes? **C
 
 Explore a grade curricular do curso, consulte facilmente os pré-requisitos necessários para cada disciplina, ou o que tiver interesse. **CC BOT** está aqui para tornar a navegação entre os documentos oficiais uma experiência simplificada.
 
-<a id="apaws"></a>
+<a id="desproj"></a>
 
-## Arquitetura Preliminar da AWS
+## Desenvolvimento do Projeto
+
+O **CCBot** foi desenvolvido usando recursos disponibilizados pela Amazon Web Services (AWS) tais como, Amazon Lex, Polly, Rekognition, SNS, DyanamoDB e S3. <br>
+O deploy foi feito utilizando a arquiterura serverless e também Terraform, já a integração foi realizada na plataforma do Telegram.
+
+- **Amazon Lex**: serviço utilizado para o desenvolvimento do chatbot.
+- **Polly**: foi utilizado o serviço de Text-to-Speech (TTS) para transformar as notícias em áudio.
+- **Rekognition**: foi utilizado o serviço de Face Liveness para permitir a autenticação do usuário no bot.
+- **Simple Notification Service (SNS)**: serviço de envio de mensagens, foi utilizado para que o usuário possa mandar mensagens para os desenvolvedores.
+- **DynamoDB**: banco de dados NoSQL disponibilizado pela AWS, é onde armazenamos os dados dos usuários cadastrados no bot.
+- **S3**: foi utilizado para armazenar os áudios das notícias gerados pelo Polly, armazena também as fotos dos usuários.
+
+<a id="utliz"></a>
+
+## Utilização do Bot
+
+Para utlizar o **CCBot** você precisa criar uma conta no Telegram, caso não tenha uma. Após isso pesquise por ```@CC_UFFS_Bot```, dentro da conversa com o bot, digite o comando ```ajuda``` para instruções e funcionalidades mais detalhadas.
+
+<a id="estrpast"></a>
+
+## Estrutura de Pastas do Projeto
+
+```
+└── src
+  └── assets
+    └── diagam-aws.png
+  
+  └── bot-lex-v2-backend
+    ├── controllers
+      ├── contact_controller.py
+      ├── contact_us_controller.py
+      ├── documents_controller.py
+      ├── news_controller.py
+      ├── ru_menu_controller.py
+      └── schedule_controller.py
+    ├── core
+      └── config.py
+    ├── handlers
+      ├── contact.py
+      ├── contact_us.py
+      ├── documents.py
+      ├── news.py
+      ├── ru_menu.py
+      └── update_lex_session.py
+    ├── middleware
+      ├── requests.py
+      ├── telegramToLex.py
+      └── text.py
+    ├── services
+      ├── dynamo.py
+      ├── lex_service.py
+      ├── polly.py
+      └── sns.py
+    ├── utils.py
+    └── web_scraping
+      ├── contact_scraping.py
+      ├── documents_scraping.py
+      ├── news_scraping.py
+      └── schedule.py
+  
+  └── face-liveness-service
+    ├── backend
+      ├── authenticate.py
+      ├── config.py
+      ├── create_liveness_session.py
+      ├── exceptions
+        ├── auth_exception.py
+        ├── aws_exceptions
+          └── rekognition_exception.py
+        └── base_exception.py
+      ├── s3_cleanup.py
+      ├── services
+        ├── bucket_service.py
+        ├── dynamodb_service.py
+        └── rekognition_service.py
+      ├── sign_in.py
+      ├── token_expiration_check.py
+      └── utils.py
+    └── frontend
+      ├── public
+        ├── favicon.ico
+        ├── index.html
+        ├── logo192.png
+        ├── logo512.png
+        ├── manifest.json
+        └── robots.txt
+      └── src
+        ├── App.css
+        ├── App.js
+        ├── App.test.js
+        ├── Components
+          ├── FaceLiveness.js
+          ├── ReferenceImage.js
+          └── ResultPage.js
+        ├── index.css
+        ├── index.js
+        └── logo.svg
+  
+  └── terraform
+    ├── bucket.tf
+    ├── dynamodb-table.tf
+    ├── main.tf
+    ├── sns.tf
+    ├── tags.tf
+    ├── terraform.tfvars
+    ├── terraform.tfvars.example
+    └── variables.tf
+```
+
+<a id="dific"></a>
+
+## Dificuldades Enfrentadas pela Equipe
+
+- Integrar diferentes serviçoes para deixar o login transparente ao usuário;
+- Tratamento de arquivos binários pelo API Gateway;
+- Utilização da biblioteca de face liveness (só tem em React e o time não possui conhecimento sobre o framework);
+- Mapear os erros nas chamadas das intents;
+
+<a id="aaws"></a>
+
+## Arquitetura AWS
 
 ![arquitetura aws](./assets/diagam-aws.png "Arquitetura AWS")
