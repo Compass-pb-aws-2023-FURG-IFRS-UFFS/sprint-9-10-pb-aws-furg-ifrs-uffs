@@ -81,10 +81,10 @@ class TwilioService {
       })
 
       // Convert the response data to base64 encoded string and then to Buffer
-      const imageData = Buffer.from(response.data, "binary").toString("base64")
-      const imageBuffer = Buffer.from(imageData, "base64")
+      const data = Buffer.from(response.data, "binary").toString("base64")
+      const mediaBuffer = Buffer.from(data, "base64")
 
-      return imageBuffer
+      return mediaBuffer
     } catch (error) {
       throw new Error("Error occurred while downloading the image in Twilio.")
     }

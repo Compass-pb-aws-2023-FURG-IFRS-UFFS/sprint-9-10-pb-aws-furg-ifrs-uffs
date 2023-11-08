@@ -39,7 +39,8 @@
 - [4 - Funcionalidades](#ancora4)
 - [5 - Estrutura de Pastas do Projeto](#ancora5)
 - [6 - Arquitetura AWS](#ancora6)
-- [7 - Licença](#ancora7)
+- [7 - Dificuldades Conhecidas](#ancora7)
+- [8 - Licença](#ancora8)
 
 <a id="ancora1"></a>
 
@@ -60,11 +61,11 @@ O deploy da aplicação foi relizado através da arquitetura <a href= https://ww
 # 3 - Acesso à Aplicação e Como Utilizar
   
   <div align="center">
-    <img src = "./assets/images/QRcode.png">
+    <img src = "./assets/images/QRCode.jpg">
   </div>
 
 - Leia o QRCode acima;<br> 
-- Encaminhe a mensagem padrão apresentada;<br>
+- Encaminhe a mensagem padrão de inicializacão do bot;<br>
 - Você receberá uma mensagem de confirmação da inicialização do Equitalk;<br>   
 - Envie um ``Oi`` para iniciar a conversa com o ``Equitalk``;<br>
 - Selecione uma das opções apresentadas no menu, ``1``, ``2``, ``3`` ou ``4``;<br>
@@ -163,7 +164,7 @@ O deploy da aplicação foi relizado através da arquitetura <a href= https://ww
 # 6 - Arquitetura AWS
 
   <div align="center">
-    <img src = "./assets/images/arquiteturaws.jpeg">
+    <img src = "./assets/images/arquiteturaAws.jpg">
   </div>
 
 
@@ -171,6 +172,14 @@ O deploy da aplicação foi relizado através da arquitetura <a href= https://ww
 
 <a id="ancora7"></a>
 
-# 7 - Licença
+# 7 - Dificuldades Conhecidas
+- Integração `Amazon Lex` com `Twilio`
+- Utilização de um `Middleware` para captar imagem e áudio via sdk `Twilio`
+- Router de Intents via `Lex-Backend`
+- Desacoplar a aplicação fazendo o uso de `Microserviços`
+
+<a id="ancora8"></a>
+
+# 8 - Licença
 
 Este projeto está licenciado sob a Licença MIT - consulte o [Link](https://mit-license.org/) para obter mais detalhes.
