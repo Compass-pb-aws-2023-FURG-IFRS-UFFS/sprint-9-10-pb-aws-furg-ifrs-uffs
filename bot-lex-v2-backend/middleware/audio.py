@@ -1,15 +1,16 @@
+import urllib.request
 import boto3
 import json
 import time
-import urllib.request
-from core.config import settings
+
 from middleware.requests import get_file_details_telegram, get_file_telegram, send_message_telegram
+from services.s3 import save_to_bucket, delete_from_bucket
+from core.config import settings
 
 def handle_audio(chat_id, voice_file_id):
 
  
     file_details = get_file_details_telegram(voice_file_id)
-    print("File details from telegram: ", file_details)
 
     if not file_details or not file_details.get("file_size") or file_details["file_size"] >= 300000/4:
         send_message_telegram(chat_id, "Seu áudio é muito grande para ser processado")
@@ -20,16 +21,8 @@ def handle_audio(chat_id, voice_file_id):
 
     bin_file = get_file_telegram(file_details["file_path"])
 
-    print("Sending voice file to s3")
-    s3_client = boto3.client('s3')
-    file_key =f'transcript/{file_details["file_path"]}'
-    s3_client.put_object(
-        Body=bin_file,
-        Bucket=settings.NEWS_BUCKET_NAME,
-        Key=file_key,
-    )
+    save_to_bucket(f'transcript/{file_details["file_path"]}', bin_file, settings.NEWS_BUCKET_NAME)
 
-    print("Starting voice transcription")
     transcribe_client = boto3.client("transcribe")
     job_name = f"bot_transcription{file_details['file_path'].replace('/','_')}"
     transcribe_client.start_transcription_job(
@@ -52,21 +45,12 @@ def handle_audio(chat_id, voice_file_id):
             break
 
         elif job_status == "FAILED":
-            print(f"Iteration {i}: Failed")
             transcribe_text = False
             break
-
-        else:
-            print(f"Iteration {i}: Pending")
 
     if len(transcribe_text) == 0:
         transcribe_text = False
         
-
-    print("Removing voice file from s3")
-    s3_client.delete_object(
-        Bucket=settings.NEWS_BUCKET_NAME,
-        Key=file_key,
-    )
+    delete_from_bucket(file_key, settings.BUCKET_NAME)
 
     return transcribe_text

@@ -7,16 +7,9 @@ import requests
 
 from middleware.requests import send_message_telegram, get_file_details_telegram, get_file_telegram
 from controllers.schedule_controller import login, get_schedule_text, update_schedule
+from services.s3 import save_to_bucket
 from core.config import settings
 from datetime import datetime
-
-
-
-def save_to_bucket(image,bucket=os.environ.get('BUCKET_NAME')):
-    s3 = boto3.client('s3')
-    object_key = f'users/{datetime.now().strftime("%d-%m-%y %H:%M:%S")}.jpeg'
-    s3.put_object(Bucket = bucket, Key = object_key,Body=image)
-    return object_key
 
 
 def handle_photo_input(chat_id, input):
@@ -24,8 +17,9 @@ def handle_photo_input(chat_id, input):
 
     file_details = get_file_details_telegram(highest_photo['file_id'])
     file = get_file_telegram(file_details['file_path'])
-    key = save_to_bucket(file)
-    # file = file.decode('iso-8859-1')
+    key = f'users/{datetime.now().strftime("%d-%m-%y %H:%M:%S")}.jpeg'
+    save_to_bucket(key, file, settings.BUCKET_NAME)
+
     print(file_details)
     client = boto3.client('lambda')
     invoke_response = client.invoke(FunctionName=settings.SIGN_IN_LAMBDA, Payload = json.dumps({'body' : {'key': key}}))
@@ -41,10 +35,8 @@ def handle_html_input(chat_id, input):
     return send_message_telegram(chat_id,update_schedule(file))
 
 
-
 def resolve_user_text(chat_id, user_text):
     bot_id, bot_alias_id, locale_id = os.environ["LEX_BOT_ID"],os.environ["LEX_ALIAS_ID"],'pt_BR'
-
 
     # Send text to Lex
     lexv2_client = boto3.client('lexv2-runtime')
@@ -54,8 +46,6 @@ def resolve_user_text(chat_id, user_text):
     
     except Exception as e:
         session_state = {}
-    # session_state = json.dumps(session_state)
-    # compressed_encoded_data = base64.b64encode(gzip.compress(session_state.encode('utf-8'))).decode('utf-8')
 
     lex_response = lexv2_client.recognize_text(
         botId = bot_id,
@@ -87,7 +77,7 @@ def resolve_user_text(chat_id, user_text):
             message = f'{message}/?id={str(chat_id)}'
     splited_lex_text = message.split('\\n')
     for text in splited_lex_text:
-        #Returns to the user the text result/
+        #Returns to the user the text result
         send_message_telegram(chat_id, text)
 
     return {"body" : json.dumps({}),"statusCode": 200}

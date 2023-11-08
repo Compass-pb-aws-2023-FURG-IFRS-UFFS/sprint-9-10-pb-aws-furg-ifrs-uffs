@@ -1,7 +1,8 @@
 import boto3
+import datetime
+
 from core.config import settings
 from utils import create_hash
-import datetime
 
 
 dynamodb = boto3.resource('dynamodb')

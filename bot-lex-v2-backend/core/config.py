@@ -8,6 +8,7 @@ class Settings:
     DYNAMO_DB_USERS_TABLE= os.environ.get('DYNAMO_DB_USERS_TABLE')
     LEX_BOT_ID = os.environ.get('LEX_BOT_ID')
     LEX_ALIAS_ID = os.environ.get('LEX_ALIAS_ID')
+    BUCKET_NAME = os.environ.get('BUCKET_NAME')
     
     NEWS_FOLDER_NAME = os.environ.get('NEWS_FOLDER_NAME')
     NEWS_BUCKET_NAME = os.environ.get('NEWS_BUCKET_NAME')
