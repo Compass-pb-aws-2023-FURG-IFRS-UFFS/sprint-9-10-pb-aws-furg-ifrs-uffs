@@ -77,7 +77,23 @@ O deploy foi feito utilizando a arquiterura serverless e também Terraform, já 
 
 ## Utilização do Bot
 
-Para utlizar o **CCBot** você precisa criar uma conta no Telegram, caso não tenha uma. Após isso pesquise por ```@CC_UFFS_Bot```, dentro da conversa com o bot, digite o comando ```ajuda``` para instruções e funcionalidades mais detalhadas.
+Para utlizar o **CCBot** você precisa criar uma conta no Telegram, caso não tenha uma. Após isso pesquise por ```@CC_UFFS_Bot```, dentro da conversa com o bot, digite o comando ```ajuda``` para instruções e funcionalidades mais detalhadas. Ou leia o **QRcode** abaixo e abra o link para iniciar a conversa.
+
+<div align="center">
+
+![utilização do bot](./assets/qr_code.png "Utilização do Bot")
+
+</div>
+
+Ao abrir o link você será redirecionando ao telegram, aperte em iniciar para começar a conversa com o bot.
+
+
+<div align="center">
+
+<img src="./assets/qr-1.png" alt="drawing" width="300"/>
+<img src="./assets/qr-2.png" alt="drawing" width="300"/>
+
+</div>
 
 <a id="estrpast"></a>
 
@@ -178,9 +194,10 @@ Para utlizar o **CCBot** você precisa criar uma conta no Telegram, caso não te
 - Tratamento de arquivos binários pelo API Gateway;
 - Utilização da biblioteca de face liveness (só tem em React e o time não possui conhecimento sobre o framework);
 - Mapear os erros nas chamadas das intents;
+- Criação do orquestrador para fazer a comunicação do telegram com o lex;
 
 <a id="aaws"></a>
 
 ## Arquitetura AWS
 
-![arquitetura aws](./assets/diagam-aws.png "Arquitetura AWS")
+![arquitetura aws](./assets/diagram-aws.png "Arquitetura AWS")
